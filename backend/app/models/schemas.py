@@ -128,3 +128,95 @@ class RepairDesignResponse(BaseModel):
     aav9_vector: Dict[str, Any]
     validation_results: Dict[str, float]
     estimated_success_rate: float
+
+
+# ============================================================================
+# TapSpeak Translation System Models
+# ============================================================================
+
+class ConfidenceMetrics(BaseModel):
+    """Confidence metrics for TapSpeak translations"""
+    esat: float = Field(..., ge=0.0, le=100.0, description="Everyday Speech Accuracy Threshold (0-100)")
+    cep: float = Field(..., ge=0.0, le=100.0, description="Conceptual Equivalence Precision (0-100)")
+    
+    def meets_threshold(self, esat_min: float = 70.0, cep_min: float = 80.0) -> bool:
+        """Check if confidence meets minimum thresholds"""
+        return self.esat >= esat_min and self.cep >= cep_min
+
+
+class TapSpeakTranslation(BaseModel):
+    """Core TapSpeak translation with 7-layer structure"""
+    id: int = Field(..., description="Sequential ID")
+    tap_speak: str = Field(..., description="Plain English memorable hook")
+    professional: str = Field(..., description="Technical term or metric")
+    operational: str = Field(..., description="How it works mechanistically")
+    translational: str = Field(..., description="Real-world impact for common man")
+    confidence: ConfidenceMetrics
+    hooks: str = Field(..., description="Mnemonic device for memory")
+    tags: List[str] = Field(..., description="Searchable categories")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id": 5,
+                "tap_speak": "Big dogs eat first (high Gravity)",
+                "professional": "Hub centrality + attractiveness index",
+                "operational": "Scale-free network hubs control 80% system state",
+                "translational": "Fix the kingpin one shot cures whole disease",
+                "confidence": {"esat": 90.0, "cep": 95.0},
+                "hooks": "Elephant in room pulls whole circus",
+                "tags": ["hubs", "achilles", "gravity", "codex"]
+            }
+        }
+
+
+class BBTechMapping(BaseModel):
+    """Basketball to Biotech translation mapping"""
+    id: int
+    tap_speak: str = Field(..., description="Basketball analogy phrase")
+    professional: str = Field(..., description="Basketball stat")
+    operational: str = Field(..., description="Biotech mechanism")
+    translational: str = Field(..., description="Networkology meaning")
+    confidence: ConfidenceMetrics
+    hooks: str
+    tags: List[str]
+
+
+class TapSpeakCategory(str, Enum):
+    """TapSpeak concept categories"""
+    CORE_CONCEPTS = "core_concepts"
+    NETWORKOLOGY_WORKFLOW = "networkology_workflow"
+    CODEX_TRANSLATIONS = "codex_translations"
+    BBTECH_BRIDGE = "basketball_biotech_bridge"
+
+
+class TapSpeakSearchRequest(BaseModel):
+    """Search request for TapSpeak translations"""
+    query: Optional[str] = None
+    category: Optional[TapSpeakCategory] = None
+    tags: Optional[List[str]] = None
+    min_esat: float = Field(70.0, ge=0.0, le=100.0)
+    min_cep: float = Field(80.0, ge=0.0, le=100.0)
+
+
+class TapSpeakTranslateRequest(BaseModel):
+    """Request to translate a technical term"""
+    technical_term: str = Field(..., description="Technical biotech term to translate")
+    domain: str = Field("biotech", description="Domain (biotech, networkology, etc.)")
+    context: Optional[str] = None
+
+
+class TapSpeakValidationRequest(BaseModel):
+    """Request to validate a TapSpeak translation"""
+    translation: TapSpeakTranslation
+    feedback: Optional[str] = None
+
+
+class TapSpeakDashboardData(BaseModel):
+    """TapSpeak dashboard data for frontend"""
+    core_concepts: List[TapSpeakTranslation]
+    workflow_steps: List[TapSpeakTranslation]
+    codex_metrics: List[TapSpeakTranslation]
+    bbtech_mappings: List[BBTechMapping]
+    total_translations: int
+    average_confidence: ConfidenceMetrics
