@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     # Neo4j Database
     NEO4J_URI: str = "bolt://localhost:7687"
     NEO4J_USER: str = "neo4j"
+    # WARNING: Change NEO4J_PASSWORD via environment variable before deployment
+    # This default value is insecure and only for local development
     NEO4J_PASSWORD: str = "password"
     NEO4J_DATABASE: str = "neo4j"
     

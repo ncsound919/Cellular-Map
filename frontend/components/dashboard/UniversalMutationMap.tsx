@@ -70,8 +70,13 @@ export default function UniversalMutationMap() {
       ctx.textAlign = 'left'
       ctx.fillText('Universal Hub Network (Pan-Cellular)', 20, 30)
 
-      containerRef.current.innerHTML = ''
-      containerRef.current.appendChild(canvas)
+      // Clear existing content properly
+      if (containerRef.current) {
+        while (containerRef.current.firstChild) {
+          containerRef.current.removeChild(containerRef.current.firstChild)
+        }
+        containerRef.current.appendChild(canvas)
+      }
     }
 
     drawPlaceholder()

@@ -1,5 +1,6 @@
 """CRISPR repair design endpoint"""
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Path
+import re
 from ...models.schemas import RepairDesignRequest, RepairDesignResponse
 from ...services.repair import NetworkRepairEngine
 
@@ -7,7 +8,10 @@ router = APIRouter()
 
 
 @router.post("/{hub_id}", response_model=RepairDesignResponse)
-async def design_repair(hub_id: str, request: RepairDesignRequest):
+async def design_repair(
+    hub_id: str = Path(..., pattern=r'^[A-Za-z0-9_-]+$', description="Hub identifier (alphanumeric, underscore, hyphen)"),
+    request: RepairDesignRequest = None
+):
     """
     Design CRISPR repair strategy with bill of materials
     
@@ -20,7 +24,9 @@ async def design_repair(hub_id: str, request: RepairDesignRequest):
         repair_engine = NetworkRepairEngine()
         
         # Design repair strategy
-        target_sequence = "ATCGATCGATCGATCGATCG"  # Placeholder - would fetch from DB
+        # TODO: fetch target sequence from database based on hub_id
+        target_sequence = "ATCGATCGATCGATCGATCG"  # Placeholder
+        # TODO: fetch wildtype sequence from database based on hub_id
         wildtype_sequence = "ATCGATCGATCGATCGATCG"  # Placeholder
         
         repair_design = repair_engine.design_repair(

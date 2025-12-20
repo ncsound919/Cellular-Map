@@ -2,14 +2,13 @@
 from fastapi import APIRouter, HTTPException, Path
 from typing import Dict, Any
 from ...services.network import UniversalInteractomeService
-from ...services.codex import CodexMetricsService
 
 router = APIRouter()
 
 
 @router.get("/{mutation_id}", response_model=Dict[str, Any])
 async def get_universal_hub_analysis(
-    mutation_id: str = Path(..., description="Universal mutation identifier")
+    mutation_id: str = Path(..., pattern=r'^[A-Za-z0-9_-]+$', description="Universal mutation identifier (alphanumeric, underscore, hyphen)")
 ):
     """
     Pan-cellular impact analysis for a specific mutation
@@ -18,7 +17,6 @@ async def get_universal_hub_analysis(
     """
     try:
         network_service = UniversalInteractomeService()
-        codex_service = CodexMetricsService()
         
         # Calculate network metrics
         gravity = network_service.calculate_hub_gravity(mutation_id)

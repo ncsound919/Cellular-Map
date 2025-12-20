@@ -1,6 +1,6 @@
 """Pydantic schemas for NetworkCellularMap v2.0"""
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Literal, Any
+from typing import List, Optional, Dict, Any
 from enum import Enum
 
 
@@ -78,7 +78,7 @@ class UniversalHub(BaseModel):
 class CrisprPayload(BaseModel):
     """CRISPR-Cas9 payload design"""
     target_id: str
-    grna_sequence: str = Field(..., min_length=20, max_length=20)
+    grna_sequence: str = Field(..., max_length=20, description="Guide RNA sequence (up to 20 nucleotides)")
     hdr_template: str
     delivery_vector: str = "AAV9_multitropic"
     predicted_efficiency: float = Field(..., ge=0.0, le=1.0)

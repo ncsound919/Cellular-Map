@@ -1,8 +1,7 @@
 """AI Scientist - Causal discovery and network vulnerability"""
 import numpy as np
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 from sklearn.preprocessing import StandardScaler
-from ..models.schemas import CellAgnosticNode
 
 
 class CausalDiscoveryService:
@@ -27,7 +26,7 @@ class CausalDiscoveryService:
         combined_data = np.hstack([gwas_data, eqtl_data, network_topology])
         
         # Normalize
-        normalized_data = self.scaler.fit_transform(combined_data)
+        self.scaler.fit_transform(combined_data)
         
         # Placeholder for actual PC-stable implementation
         # Would use causalnex or other causal discovery library

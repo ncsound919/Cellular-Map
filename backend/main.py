@@ -21,7 +21,10 @@ async def lifespan(app: FastAPI):
         db_connection.initialize_schema()
         print("Database connected and schema initialized")
     except Exception as e:
-        print(f"Database connection warning: {e}")
+        print(f"CRITICAL: Database connection failed: {e}")
+        print("Application requires database connection. Please check Neo4j configuration.")
+        # For production, uncomment the line below to fail fast:
+        # raise
     
     yield
     
@@ -39,9 +42,14 @@ app = FastAPI(
 )
 
 # Configure CORS
+# For development: allows localhost. For production: set ALLOWED_ORIGINS environment variable
+allowed_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+if hasattr(settings, 'ALLOWED_ORIGINS') and settings.ALLOWED_ORIGINS:
+    allowed_origins = settings.ALLOWED_ORIGINS.split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -66,12 +74,22 @@ async def root():
 @app.get("/health")
 async def health():
     """Health check endpoint"""
+    db_status = "disconnected"
+    try:
+        # Check database connection
+        db_connection.execute_query("RETURN 1")
+        db_status = "connected"
+    except Exception:
+        db_status = "disconnected"
+    
+    overall_status = "healthy" if db_status == "connected" else "unhealthy"
+    
     return {
-        "status": "healthy",
+        "status": overall_status,
         "version": settings.VERSION,
         "services": {
             "api": "running",
-            "database": "connected"
+            "database": db_status
         }
     }
 

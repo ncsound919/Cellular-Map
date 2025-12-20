@@ -1,10 +1,10 @@
 """Network mapping and analysis service"""
 import networkx as nx
 import numpy as np
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any
 from scipy import stats
 from ..core.config import settings
-from ..models.schemas import NetworkRole, CellAgnosticNode, PanCellularEdge
+from ..models.schemas import CellAgnosticNode, PanCellularEdge
 
 
 class UniversalInteractomeService:
@@ -45,12 +45,22 @@ class UniversalInteractomeService:
         """
         degrees = [d for n, d in self.graph.degree()]
         
-        # Fit power law
-        log_degrees = np.log(degrees)
-        log_counts = np.log(np.bincount(degrees)[1:])
+        if not degrees or len(degrees) < 2:
+            return {"error": "Insufficient data: graph has fewer than 2 nodes"}
         
-        if len(log_counts) > 1:
-            slope, intercept = np.polyfit(log_degrees[1:], log_counts, 1)
+        # Fit power law
+        degree_counts = np.bincount(degrees)
+        if len(degree_counts) < 2:
+            return {"error": "Insufficient data for power law fitting"}
+        
+        log_counts = np.log(degree_counts[1:])
+        if len(log_counts) < 2:
+            return {"error": "Insufficient degree distribution for power law fitting"}
+        
+        log_degrees = np.log(np.arange(1, len(degree_counts)))
+        
+        if len(log_degrees) == len(log_counts) and len(log_counts) > 1:
+            slope, intercept = np.polyfit(log_degrees, log_counts, 1)
             alpha = -slope
             
             # KS test
@@ -105,7 +115,7 @@ class UniversalInteractomeService:
         try:
             eigenvector = nx.eigenvector_centrality(self.graph, max_iter=1000)
             eigen_value = eigenvector.get(node_id, 0)
-        except:
+        except Exception:
             eigen_value = 0
         
         if degree > 0:
@@ -150,7 +160,27 @@ class UniversalInteractomeService:
         }
     
     def find_disease_module(self, mutation_ids: List[str], max_distance: int = 3) -> List[str]:
-        """Find disease module around mutations"""
+        """
+        Find disease module around mutations.
+        
+        This function collects all nodes that lie within a shortest-path distance
+        of at most max_distance from any of the provided mutation_ids in the
+        universal interactome graph.
+        
+        Parameters
+        ----------
+        mutation_ids : List[str]
+            Node identifiers corresponding to mutations of interest.
+        max_distance : int, optional
+            Maximum shortest-path distance from each mutation node to include in
+            the module. Defaults to 3. Callers may pass a different value to
+            control the module radius.
+        
+        Returns
+        -------
+        List[str]
+            List of node identifiers that belong to the aggregated disease module.
+        """
         module_nodes = set()
         
         for mutation_id in mutation_ids:

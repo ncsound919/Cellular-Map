@@ -1,7 +1,7 @@
 """Data ingestion service - Anti-reductionist federation"""
 import requests
 from typing import Dict, List, Any, Optional
-from Bio import Entrez, SeqIO
+from Bio import Entrez
 from ..core.config import settings
 
 

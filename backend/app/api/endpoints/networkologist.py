@@ -1,6 +1,5 @@
 """Networkologist diagnosis endpoint"""
 from fastapi import APIRouter, HTTPException
-from typing import List
 from ...models.schemas import (
     DiagnosisRequest, 
     DiagnosisResponse,
@@ -10,8 +9,6 @@ from ...models.schemas import (
     CrisprPayload
 )
 from ...services.network import UniversalInteractomeService
-from ...services.ai_scientist import CausalDiscoveryService, NetworkVulnerabilityService
-from ...services.codex import CodexMetricsService
 from ...services.repair import NetworkRepairEngine
 
 router = APIRouter()
@@ -28,9 +25,6 @@ async def diagnose_patient(request: DiagnosisRequest):
     try:
         # Initialize services
         network_service = UniversalInteractomeService()
-        causal_service = CausalDiscoveryService()
-        vulnerability_service = NetworkVulnerabilityService()
-        codex_service = CodexMetricsService()
         repair_engine = NetworkRepairEngine()
         
         # Extract mutation IDs from patient genome

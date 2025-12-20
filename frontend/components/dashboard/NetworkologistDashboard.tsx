@@ -7,13 +7,18 @@ import CodexMetrics from './CodexMetrics'
 
 export default function NetworkologistDashboard() {
   const [systemStatus, setSystemStatus] = useState<any>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     // Fetch system status
-    fetch('http://localhost:8000/')
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+    fetch(`${apiUrl}/`)
       .then(res => res.json())
       .then(data => setSystemStatus(data))
-      .catch(err => console.error('Failed to fetch system status:', err))
+      .catch(err => {
+        console.error('Failed to fetch system status:', err)
+        setError('Unable to connect to backend API. Please check if the server is running.')
+      })
   }, [])
 
   return (
@@ -21,7 +26,12 @@ export default function NetworkologistDashboard() {
       <div className="header">
         <h1>NetworkCellularMap v2.0</h1>
         <p>Networkology Core Engine - Organ Agnostic Network Diagnosis</p>
-        {systemStatus && (
+        {error && (
+          <div style={{ marginTop: '10px', color: '#d32f2f', fontSize: '0.9rem', padding: '10px', background: '#ffebee', borderRadius: '4px' }}>
+            ⚠️ {error}
+          </div>
+        )}
+        {systemStatus && !error && (
           <div style={{ marginTop: '10px', color: '#666', fontSize: '0.9rem' }}>
             Status: {systemStatus.status} | Paradigm: {systemStatus.paradigm}
           </div>

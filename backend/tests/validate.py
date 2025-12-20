@@ -41,7 +41,7 @@ def test_schemas():
         pos = GenomePosition(chr="17", pos=7577548, ref="C", alt="T")
         
         # Test CellAgnosticNode
-        node = CellAgnosticNode(
+        CellAgnosticNode(
             universal_id="TP53",
             genome_position=pos,
             network_role=NetworkRole.HUB,
@@ -50,6 +50,7 @@ def test_schemas():
         
         # Test CodexScores
         scores = CodexScores(trueness=0.85, flow=0.90, gravity=0.88)
+        assert scores.trueness == 0.85 and scores.flow == 0.90 and scores.gravity == 0.88
         
         print("✓ All schemas validated")
         return True
@@ -67,12 +68,12 @@ def test_services():
         from app.services.codex import CodexMetricsService, GamificationService
         from app.services.repair import NetworkRepairEngine
         
-        # Initialize services
-        network = UniversalInteractomeService()
-        causal = CausalDiscoveryService()
-        codex = CodexMetricsService()
-        gamification = GamificationService()
-        repair = NetworkRepairEngine()
+        # Initialize services (verify they can be instantiated)
+        UniversalInteractomeService()
+        CausalDiscoveryService()
+        CodexMetricsService()
+        GamificationService()
+        NetworkRepairEngine()
         
         print("✓ All services initialized")
         return True

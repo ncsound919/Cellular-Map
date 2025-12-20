@@ -1,7 +1,6 @@
 """Network repair engine - Universal CRISPR-Cas9 and viral vectors"""
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 import random
-import string
 from ..models.schemas import CrisprPayload
 from ..core.config import settings
 
@@ -49,13 +48,20 @@ class CrisprDesignService:
         gc_content_optimal: tuple = (0.4, 0.6)
     ) -> float:
         """
-        Predict CRISPR efficiency based on gRNA characteristics
+        Predict CRISPR efficiency based on gRNA characteristics.
+        
+        NOTE: This is a simplified placeholder implementation using random values.
+        For production use, replace with a deterministic model based on:
+        - GC content
+        - Secondary structure
+        - Off-target scoring
+        - Position-specific features
         """
         # Calculate GC content
         gc_count = grna_sequence.count('G') + grna_sequence.count('C')
         gc_content = gc_count / len(grna_sequence) if grna_sequence else 0
         
-        # Simple efficiency prediction
+        # Simple efficiency prediction (TODO: replace with ML model or deterministic scoring)
         if gc_content_optimal[0] <= gc_content <= gc_content_optimal[1]:
             return 0.85 + random.random() * 0.10  # 85-95%
         else:
