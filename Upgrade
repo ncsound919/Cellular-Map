@@ -57,7 +57,7 @@
         "book_impl": "Quantum superposition of mutation states [attached quantum book]"
       },
       "9_citizen_science_swarm": {
-        "open_source": "Overlay365 + IPFS + Neo4j",
+        "open_source": "Overlay365 (internal platform) + IPFS + Neo4j",
         "gamification": "Blockchain tokenized contributions + leaderboards"
       },
       "10_crispr_prime_editor": {
