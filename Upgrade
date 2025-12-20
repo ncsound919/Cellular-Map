@@ -42,7 +42,7 @@
       },
       "5_viral_coevolution_tracker": {
         "open_source": "Nextclade + NetworkX",
-        "book_impl": "Dijkstra for escape mutation prediction [file:38 Ch8.10] + coinduction for arm's race bisimulation [file:40]"
+        "book_impl": "Dijkstra for escape mutation prediction [file:38 Ch8.10] + coinduction for arms race bisimulation [file:40]"
       },
       "6_hub_resilience_trainer": {
         "open_source": "DEAP (genetic algorithms) + NetworkX",
