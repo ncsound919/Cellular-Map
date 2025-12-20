@@ -267,11 +267,18 @@ class TapSpeakEngine:
         
         # Filter by tags
         if tags:
-            tag_results = set()
+            tag_results = []
             for tag in tags:
                 if tag in self._tag_index:
-                    tag_results.update(self._tag_index[tag])
-            results = [t for t in results if t in tag_results]
+                    tag_results.extend(self._tag_index[tag])
+            # Remove duplicates by using translation IDs
+            seen_ids = set()
+            unique_results = []
+            for t in tag_results:
+                if t.id not in seen_ids:
+                    seen_ids.add(t.id)
+                    unique_results.append(t)
+            results = unique_results
         
         # Filter by query
         if query:
