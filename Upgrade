@@ -50,7 +50,7 @@
       },
       "7_network_time_reversal": {
         "open_source": "SciPy ODE solvers + NetworkX",
-        "book_impl": "Reverse Huygens-Knig decomposition [file:39 Ch3.6.1]"
+        "book_impl": "Reverse Huygens-König decomposition [file:39 Ch3.6.1]"
       },
       "8_quantum_network_simulator": {
         "open_source": "Qiskit + NetworkX",
