@@ -193,61 +193,90 @@ class NetworkologyDAG:
         # Stage 1: Ingest
         def ingest_stage(inputs: Dict[str, Any]) -> Dict[str, Any]:
             """Data ingestion from OMIM, GenBank, KEGG"""
-            from .ingestion import DataIngestionService
-            
-            service = DataIngestionService()
-            gene = inputs.get("gene", "TP53")
-            
-            return {
-                "status": "success",
-                "stage": "ingest",
-                "data": service.biokleisli_join(gene)
-            }
+            # Import here to avoid circular dependencies and handle missing modules gracefully
+            try:
+                from .ingestion import DataIngestionService
+                
+                service = DataIngestionService()
+                gene = inputs.get("gene", "TP53")
+                
+                return {
+                    "status": "success",
+                    "stage": "ingest",
+                    "data": service.biokleisli_join(gene)
+                }
+            except ImportError as e:
+                return {
+                    "status": "error",
+                    "stage": "ingest",
+                    "error": f"Failed to import ingestion service: {str(e)}"
+                }
         
         # Stage 2: Map
         def map_stage(inputs: Dict[str, Any]) -> Dict[str, Any]:
             """Network mapping - build universal interactome"""
-            from .network import UniversalInteractomeService
-            
-            service = UniversalInteractomeService()
-            
-            return {
-                "status": "success",
-                "stage": "map",
-                "network_stats": {
-                    "nodes": 0,
-                    "edges": 0,
-                    "note": "Network mapping placeholder"
+            try:
+                from .network import UniversalInteractomeService
+                
+                service = UniversalInteractomeService()
+                
+                return {
+                    "status": "success",
+                    "stage": "map",
+                    "network_stats": {
+                        "nodes": 0,
+                        "edges": 0,
+                        "note": "Network mapping placeholder"
+                    }
                 }
-            }
+            except ImportError as e:
+                return {
+                    "status": "error",
+                    "stage": "map",
+                    "error": f"Failed to import network service: {str(e)}"
+                }
         
         # Stage 3: Analyze
         def analyze_stage(inputs: Dict[str, Any]) -> Dict[str, Any]:
             """AI analysis - causal discovery and hub identification"""
-            from .ai_scientist import CausalDiscoveryService
-            
-            service = CausalDiscoveryService()
-            
-            return {
-                "status": "success",
-                "stage": "analyze",
-                "analysis": service.identify_causal_examples()
-            }
+            try:
+                from .ai_scientist import CausalDiscoveryService
+                
+                service = CausalDiscoveryService()
+                
+                return {
+                    "status": "success",
+                    "stage": "analyze",
+                    "analysis": service.identify_causal_examples()
+                }
+            except ImportError as e:
+                return {
+                    "status": "error",
+                    "stage": "analyze",
+                    "error": f"Failed to import AI scientist service: {str(e)}"
+                }
         
         # Stage 4: Intervene
         def intervene_stage(inputs: Dict[str, Any]) -> Dict[str, Any]:
             """Design intervention - CRISPR repair"""
-            from .repair import RepairDesignService
-            
-            service = RepairDesignService()
-            
-            return {
-                "status": "success",
-                "stage": "intervene",
-                "repair_design": {
-                    "note": "CRISPR design placeholder"
+            try:
+                from .repair import RepairDesignService
+                
+                service = RepairDesignService()
+                
+                return {
+                    "status": "success",
+                    "stage": "intervene",
+                    "repair_design": {
+                        "note": "CRISPR design placeholder"
+                    }
                 }
-            }
+            except ImportError as e:
+                return {
+                    "status": "error",
+                    "stage": "intervene",
+                    "error": f"Failed to import repair service: {str(e)}"
+                }
         
         # Build DAG
         self.pipeline.add_stage("ingest", ingest_stage, dependencies=[])

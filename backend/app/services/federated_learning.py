@@ -135,6 +135,13 @@ class FederatedLearningService:
         """
         Execute one round of federated training.
         
+        NOTE: This is a simulation implementation using placeholder values.
+        In production, this would:
+        - Send model to clients
+        - Clients train on local data
+        - Aggregate real gradients/weights
+        - Return updated global model
+        
         Parameters
         ----------
         model_state : Dict[str, Any]
@@ -147,19 +154,23 @@ class FederatedLearningService:
         Returns
         -------
         Dict[str, Any]
-            Updated model state and training metrics
+            Updated model state and training metrics (simulated)
         """
+        # TODO: Replace with actual federated training when FedLab/OpenFL is fully integrated
+        # Current implementation is for simulation/demonstration purposes only
+        
         # Simulate client training
         client_updates = []
         
         for i, client in enumerate(self.clients[:len(client_data)]):
             # Each client trains locally
+            # NOTE: Using random values for simulation - replace with actual training
             local_update = {
                 "client_id": client["client_id"],
                 "n_samples": client_data[i].get("n_samples", 100),
-                "loss": np.random.random(),  # Placeholder
-                "accuracy": np.random.random(),  # Placeholder
-                "update_norm": np.random.random()
+                "loss": np.random.random(),  # SIMULATION ONLY
+                "accuracy": np.random.random(),  # SIMULATION ONLY
+                "update_norm": np.random.random()  # SIMULATION ONLY
             }
             client_updates.append(local_update)
         
@@ -182,12 +193,14 @@ class FederatedLearningService:
         
         return {
             "status": "success",
+            "mode": "simulation",
             "aggregation": aggregation_strategy,
             "n_clients_participated": len(client_updates),
             "global_loss": avg_loss,
             "global_accuracy": avg_accuracy,
             "client_updates": client_updates,
-            "model_updated": True
+            "model_updated": True,
+            "note": "Simulation mode - values are placeholders for demonstration"
         }
     
     def wrap_pytorch_model_for_federation(

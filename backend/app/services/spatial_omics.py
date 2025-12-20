@@ -38,6 +38,7 @@ class SpatialOmicsService:
             Preprocessed data with normalized counts, scaled data, and QC metrics
         """
         try:
+            # Lazy import to avoid requiring Scanpy if not used
             import scanpy as sc
             import anndata
             
@@ -286,6 +287,11 @@ class SpatialOmicsService:
         """
         Extract image features at spatial locations using Squidpy.
         
+        NOTE: This is a placeholder implementation. Full functionality requires:
+        - Loading actual tissue image data
+        - Squidpy installation
+        - Proper image processing pipeline
+        
         Parameters
         ----------
         image_path : str
@@ -298,7 +304,7 @@ class SpatialOmicsService:
         Returns
         -------
         Dict[str, Any]
-            Extracted image features
+            Extracted image features (placeholder)
         """
         try:
             import squidpy as sq
@@ -306,14 +312,14 @@ class SpatialOmicsService:
             if self.adata is None or 'spatial' not in self.adata.obsm:
                 return {"error": "Spatial coordinates not set. Run build_spatial_neighborhood_graph first."}
             
-            # This is a placeholder - actual implementation would load image
-            # and extract features at specified locations
+            # TODO: Implement actual image feature extraction
+            # This requires loading image data and processing at spatial locations
             
             return {
-                "status": "success",
+                "status": "placeholder",
                 "features": features,
                 "n_locations": len(spatial_coords),
-                "note": "Feature extraction placeholder - requires actual image data"
+                "note": "Placeholder - requires actual image data and full Squidpy implementation"
             }
             
         except ImportError:
