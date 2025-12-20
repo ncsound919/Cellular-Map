@@ -1,26 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-
-/**
- * TapSpeak Translation Interface
- * Matches backend schema
- */
-interface ConfidenceMetrics {
-  esat: number;
-  cep: number;
-}
-
-interface TapSpeakTranslation {
-  id: number;
-  tap_speak: string;
-  professional: string;
-  operational: string;
-  translational: string;
-  confidence: ConfidenceMetrics;
-  hooks: string;
-  tags: string[];
-}
+import type { ConfidenceMetrics, TapSpeakTranslation } from '../../lib/tapspeak-types';
 
 interface TapSpeakCardProps {
   translation: TapSpeakTranslation;

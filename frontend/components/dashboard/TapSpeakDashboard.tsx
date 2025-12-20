@@ -2,45 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import TapSpeakCard from './TapSpeakCard';
-
-/**
- * TapSpeak Interfaces
- */
-interface ConfidenceMetrics {
-  esat: number;
-  cep: number;
-}
-
-interface TapSpeakTranslation {
-  id: number;
-  tap_speak: string;
-  professional: string;
-  operational: string;
-  translational: string;
-  confidence: ConfidenceMetrics;
-  hooks: string;
-  tags: string[];
-}
-
-interface BBTechMapping {
-  id: number;
-  tap_speak: string;
-  professional: string;
-  operational: string;
-  translational: string;
-  confidence: ConfidenceMetrics;
-  hooks: string;
-  tags: string[];
-}
-
-interface TapSpeakDashboardData {
-  core_concepts: TapSpeakTranslation[];
-  workflow_steps: TapSpeakTranslation[];
-  codex_metrics: TapSpeakTranslation[];
-  bbtech_mappings: BBTechMapping[];
-  total_translations: number;
-  average_confidence: ConfidenceMetrics;
-}
+import type {
+  ConfidenceMetrics,
+  TapSpeakTranslation,
+  BBTechMapping,
+  TapSpeakDashboardData
+} from '../../lib/tapspeak-types';
 
 /**
  * TapSpeak Dashboard Component
@@ -68,7 +35,8 @@ export default function TapSpeakDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/api/v1/tapspeak/dashboard');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+      const response = await fetch(`${apiUrl}/tapspeak/dashboard`);
       if (!response.ok) throw new Error('Failed to fetch TapSpeak data');
       const dashboardData = await response.json();
       setData(dashboardData);
@@ -99,10 +67,12 @@ export default function TapSpeakDashboard() {
         translations = data.bbtech_mappings;
         break;
       default:
+        // Include all translations including BBTech
         translations = [
           ...data.core_concepts,
           ...data.workflow_steps,
-          ...data.codex_metrics
+          ...data.codex_metrics,
+          ...data.bbtech_mappings
         ];
     }
 

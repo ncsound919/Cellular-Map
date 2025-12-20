@@ -84,7 +84,7 @@ async def search_translations(request: TapSpeakSearchRequest):
     return results
 
 
-@router.post("/translate", response_model=Optional[TapSpeakTranslation])
+@router.post("/translate", response_model=TapSpeakTranslation)
 async def translate_term(request: TapSpeakTranslateRequest):
     """
     Translate a technical term to TapSpeak
@@ -167,15 +167,15 @@ async def get_concept_by_id(concept_id: int):
     """
     engine = get_tapspeak_engine()
     
-    # Search through all translations
-    for translation in engine._all_translations:
-        if translation.id == concept_id:
-            return translation
+    translation = engine.get_concept_by_id(concept_id)
     
-    raise HTTPException(
-        status_code=404,
-        detail=f"TapSpeak concept with ID {concept_id} not found"
-    )
+    if not translation:
+        raise HTTPException(
+            status_code=404,
+            detail=f"TapSpeak concept with ID {concept_id} not found"
+        )
+    
+    return translation
 
 
 @router.get("/tags", response_model=List[str])
@@ -187,7 +187,7 @@ async def get_all_tags():
     Useful for building tag filters in the UI.
     """
     engine = get_tapspeak_engine()
-    return sorted(engine._tag_index.keys())
+    return engine.get_all_tags()
 
 
 @router.get("/stats")
@@ -216,6 +216,6 @@ async def get_statistics():
             "codex_translations": len(dashboard.codex_metrics),
             "bbtech_mappings": len(dashboard.bbtech_mappings)
         },
-        "total_tags": len(engine._tag_index),
-        "tags": sorted(engine._tag_index.keys())
+        "total_tags": engine.get_tag_count(),
+        "tags": engine.get_all_tags()
     }

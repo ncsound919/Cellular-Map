@@ -271,7 +271,7 @@ class TapSpeakEngine:
             for tag in tags:
                 if tag in self._tag_index:
                     tag_results.extend(self._tag_index[tag])
-            # Remove duplicates by using translation IDs
+            # Remove duplicates while preserving order
             seen_ids = set()
             unique_results = []
             for t in tag_results:
@@ -331,8 +331,14 @@ class TapSpeakEngine:
         """Get all data for TapSpeak dashboard"""
         # Calculate average confidence
         all_confidences = [t.confidence for t in self._all_translations]
-        avg_esat = sum(c.esat for c in all_confidences) / len(all_confidences)
-        avg_cep = sum(c.cep for c in all_confidences) / len(all_confidences)
+        
+        if not all_confidences:
+            # Default values if no translations exist
+            avg_esat = 0.0
+            avg_cep = 0.0
+        else:
+            avg_esat = sum(c.esat for c in all_confidences) / len(all_confidences)
+            avg_cep = sum(c.cep for c in all_confidences) / len(all_confidences)
         
         return TapSpeakDashboardData(
             core_concepts=self._core_concepts,
@@ -378,6 +384,39 @@ class TapSpeakEngine:
             validations["suggestions"].append("Add more tags for better searchability")
         
         return validations
+    
+    def get_concept_by_id(self, concept_id: int) -> Optional[TapSpeakTranslation]:
+        """
+        Get a specific TapSpeak concept by ID
+        
+        Args:
+            concept_id: The ID of the concept to retrieve
+            
+        Returns:
+            TapSpeakTranslation if found, None otherwise
+        """
+        for translation in self._all_translations:
+            if translation.id == concept_id:
+                return translation
+        return None
+    
+    def get_all_tags(self) -> List[str]:
+        """
+        Get all available tags for filtering
+        
+        Returns:
+            Sorted list of all unique tags
+        """
+        return sorted(self._tag_index.keys())
+    
+    def get_tag_count(self) -> int:
+        """
+        Get total number of unique tags
+        
+        Returns:
+            Number of unique tags
+        """
+        return len(self._tag_index)
 
 
 # Global TapSpeak engine instance
