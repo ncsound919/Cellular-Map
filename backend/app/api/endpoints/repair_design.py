@@ -9,8 +9,8 @@ router = APIRouter()
 
 @router.post("/{hub_id}", response_model=RepairDesignResponse)
 async def design_repair(
-    hub_id: str = Path(..., pattern=r'^[A-Za-z0-9_-]+$', description="Hub identifier (alphanumeric, underscore, hyphen)"),
-    request: RepairDesignRequest = None
+    request: RepairDesignRequest,
+    hub_id: str = Path(..., pattern=r'^[A-Za-z0-9_-]+$', description="Hub identifier (alphanumeric, underscore, hyphen)")
 ):
     """
     Design CRISPR repair strategy with bill of materials

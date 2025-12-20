@@ -78,7 +78,12 @@ class UniversalHub(BaseModel):
 class CrisprPayload(BaseModel):
     """CRISPR-Cas9 payload design"""
     target_id: str
-    grna_sequence: str = Field(..., max_length=20, description="Guide RNA sequence (up to 20 nucleotides)")
+    grna_sequence: str = Field(
+        ..., 
+        min_length=20, 
+        max_length=20, 
+        description="Guide RNA sequence (exactly 20 nucleotides for CRISPR-Cas9)"
+    )
     hdr_template: str
     delivery_vector: str = "AAV9_multitropic"
     predicted_efficiency: float = Field(..., ge=0.0, le=1.0)

@@ -50,6 +50,13 @@ class CrisprDesignService:
         """
         Predict CRISPR efficiency based on gRNA characteristics.
         
+        Args:
+            grna_sequence: Guide RNA sequence (20 nucleotides)
+            gc_content_optimal: Tuple of (min, max) optimal GC content ratio
+        
+        Returns:
+            float: Predicted efficiency score between 0.0 and 1.0
+        
         NOTE: This is a simplified placeholder implementation using random values.
         For production use, replace with a deterministic model based on:
         - GC content
