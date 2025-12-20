@@ -245,6 +245,118 @@ Features: Auto-scaling, clustering, load balancing, persistence
 - **K8s Ready**: ✅ Yes
 - **Documentation**: ✅ Complete
 
+## Composable Toolchain (NEW)
+
+### Overview
+Added a **small, composable toolchain** with three distinct layers that avoid monolithic architecture and keep the Networkology + TapSpeak stack lean.
+
+### Components Added
+
+#### Layer 1: Spatial / Network Core
+- ✅ **SpatialOmicsService**: Scanpy + Squidpy integration
+  - Single-cell preprocessing and analysis
+  - Spatial neighborhood graph construction
+  - UMAP/PHATE embeddings
+  - Integration with molecular networks
+- ✅ **NetworkX**: Already integrated for prototype interactomes
+- ✅ **Neo4j**: Already integrated for persistent storage
+
+#### Layer 2: Training / AI
+- ✅ **PyTorch + PyG**: Already integrated for GNN training
+- ✅ **scvi-tools**: Added for probabilistic single-cell models
+- ✅ **SpatialGCN export**: Data preparation for graph neural networks
+
+#### Layer 3: Federated / Global Adoption
+- ✅ **FederatedLearningService**: Dual-mode FL service
+  - FedLab for simulation (100s of clients)
+  - OpenFL for production deployment
+  - Privacy-preserving training (DP, SecAgg)
+  - Overlay365 network simulation
+  - Cross-hospital training support
+
+#### Orchestration
+- ✅ **NetworkologyPipeline**: Lightweight DAG framework
+  - Dependency resolution
+  - Pre-configured 4-stage DAG (ingest → map → analyze → intervene)
+- ✅ **TapSpeakGenerator**: Plain Python + CSV lexicon
+  - Technical term → plain language hooks
+  - No heavy NLP stack
+- ✅ **BBTechMetrics**: Simple CSV-based metrics
+  - Trueness, Flow, Gravity calculations
+
+### New Files Added
+```
+backend/app/services/
+├── spatial_omics.py        (397 lines)
+├── federated_learning.py   (391 lines)
+└── orchestration.py        (416 lines)
+
+backend/examples/
+└── toolchain_usage.py      (240 lines)
+
+backend/tests/
+└── test_toolchain.py       (195 lines)
+
+docs/
+├── TOOLCHAIN.md            (542 lines)
+└── TOOLCHAIN_INTEGRATION.md (365 lines)
+```
+
+### Dependencies Added
+```python
+# Spatial Omics
+scanpy==1.10.0
+squidpy==1.4.1
+anndata==0.10.5
+scvi-tools==1.1.0
+
+# Federated Learning
+fedlab==1.3.0
+openfl==1.5
+
+# Orchestration
+ruffus==2.8.4
+```
+
+### Key Features
+
+1. **No Monoliths**: Each layer is independent and composable
+2. **Lean Stack**: Only ~7 new packages, all focused and lightweight
+3. **Production Ready**: Both simulation (FedLab) and production (OpenFL) modes
+4. **Privacy First**: GDPR compliant, HIPAA compatible federated learning
+5. **Easy Integration**: Works seamlessly with existing PyTorch Geometric code
+
+### Usage Example
+
+```python
+# Complete workflow using all three layers
+from app.services.spatial_omics import SpatialOmicsService
+from app.services.federated_learning import FederatedLearningService
+from app.services.orchestration import NetworkologyDAG
+
+# Layer 1: Spatial analysis
+spatial = SpatialOmicsService()
+spatial.preprocess_expression_data(counts, genes, cells)
+spatial_graph = spatial.build_spatial_neighborhood_graph(coords)
+
+# Layer 2: Export for GNN training
+gcn_data = spatial.export_for_spatialgcn()
+
+# Layer 3: Federated learning
+fl = FederatedLearningService(mode="production")
+fl.setup_production_federation(hospitals, aggregator)
+
+# Or use pre-configured pipeline
+dag = NetworkologyDAG()
+results = dag.run(gene="TP53")
+```
+
+### Documentation
+- **Toolchain Architecture**: [TOOLCHAIN.md](docs/TOOLCHAIN.md)
+- **Integration Guide**: [TOOLCHAIN_INTEGRATION.md](docs/TOOLCHAIN_INTEGRATION.md)
+- **Usage Examples**: [toolchain_usage.py](backend/examples/toolchain_usage.py)
+- **Tests**: [test_toolchain.py](backend/tests/test_toolchain.py)
+
 ## How to Use
 
 ### Quick Start (5 minutes)
@@ -254,6 +366,8 @@ See [QUICKSTART.md](docs/QUICKSTART.md)
 - Architecture: [ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - API Reference: [API.md](docs/API.md)
 - Deployment: [DEPLOYMENT.md](docs/DEPLOYMENT.md)
+- **Composable Toolchain**: [TOOLCHAIN.md](docs/TOOLCHAIN.md)
+- **Toolchain Integration**: [TOOLCHAIN_INTEGRATION.md](docs/TOOLCHAIN_INTEGRATION.md)
 
 ## Future Enhancements (Not in Scope)
 
