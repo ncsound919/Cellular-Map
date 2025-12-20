@@ -67,7 +67,7 @@
     },
     "implementation_scaffold": {
       "core_algorithms": {
-        "scale_free_fitness": "powerlaw.stats.exponfit + Kolmogorov-Smirnov [file:38 Ch2.4]",
+        "scale_free_fitness": "powerlaw.Fit + Kolmogorov-Smirnov [file:38 Ch2.4]",
         "pan_cellular_pca": "sklearn.decomposition.PCA(n_components=3) [file:39 Ch2.3]",
         "causal_discovery": "CausalNex + NOTEARS from DoWhy"
       },
