@@ -1,6 +1,6 @@
 """Pydantic schemas for NetworkCellularMap v2.0"""
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Literal
+from typing import List, Optional, Dict, Literal, Any
 from enum import Enum
 
 
@@ -120,6 +120,6 @@ class RepairDesignResponse(BaseModel):
     """Repair design response with bill of materials"""
     hub_id: str
     crispr_payload: CrisprPayload
-    aav9_vector: Dict[str, any]
+    aav9_vector: Dict[str, Any]
     validation_results: Dict[str, float]
     estimated_success_rate: float
