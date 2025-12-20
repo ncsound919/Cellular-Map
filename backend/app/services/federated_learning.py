@@ -135,7 +135,10 @@ class FederatedLearningService:
         """
         Execute one round of federated training.
         
-        NOTE: This is a simulation implementation using placeholder values.
+        ⚠️ WARNING: SIMULATION MODE ONLY ⚠️
+        This implementation uses placeholder values for demonstration purposes.
+        DO NOT USE IN PRODUCTION without replacing with actual training logic.
+        
         In production, this would:
         - Send model to clients
         - Clients train on local data
@@ -154,7 +157,7 @@ class FederatedLearningService:
         Returns
         -------
         Dict[str, Any]
-            Updated model state and training metrics (simulated)
+            Updated model state and training metrics (simulated values only)
         """
         # TODO: Replace with actual federated training when FedLab/OpenFL is fully integrated
         # Current implementation is for simulation/demonstration purposes only
