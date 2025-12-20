@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { ConfidenceMetrics, TapSpeakTranslation } from '../../lib/tapspeak-types';
 
 interface TapSpeakCardProps {
@@ -18,6 +18,11 @@ interface TapSpeakCardProps {
 export default function TapSpeakCard({ translation, defaultView = 'common' }: TapSpeakCardProps) {
   const [view, setView] = useState<'common' | 'expert'>(defaultView);
   
+  // Sync view state with defaultView prop changes
+  useEffect(() => {
+    setView(defaultView);
+  }, [defaultView]);
+  
   const isCommonView = view === 'common';
   
   // Get confidence color
@@ -26,14 +31,6 @@ export default function TapSpeakCard({ translation, defaultView = 'common' }: Ta
     if (score >= 80) return 'text-blue-500';
     if (score >= 70) return 'text-yellow-500';
     return 'text-red-500';
-  };
-  
-  // Get confidence badge color
-  const getConfidenceBadgeColor = (score: number): string => {
-    if (score >= 90) return 'bg-green-100 text-green-800 border-green-300';
-    if (score >= 80) return 'bg-blue-100 text-blue-800 border-blue-300';
-    if (score >= 70) return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-    return 'bg-red-100 text-red-800 border-red-300';
   };
 
   return (
