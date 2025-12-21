@@ -361,8 +361,11 @@ class CerebroCore:
         agenda = await self.agent.prepare_agenda()
         report["sections"]["Suggested Agenda for Tomorrow"] = agenda
         
-        # Add default message if no discoveries
-        if not report["sections"] or all(not v for v in report["sections"].values()):
+        # Add default message if no discoveries (check for empty or all-empty sections)
+        if not report["sections"] or all(
+            not v or (isinstance(v, list) and len(v) == 0) 
+            for v in report["sections"].values()
+        ):
             report["sections"]["Summary"] = ["No new discoveries today. Autonomous agent continues monitoring."]
         
         return report
