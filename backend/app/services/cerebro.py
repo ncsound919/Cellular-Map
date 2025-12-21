@@ -250,7 +250,7 @@ class CerebroCore:
         self.cognitive_profile = await self.user_model.build_cognitive_profile(self.user)
         
         # Optimize for user's learning style
-        optimizations = await self.meta_learner.optimize_for_user(self.user)
+        await self.meta_learner.optimize_for_user(self.user)
         
         print(f"✓ Personalized to your cognitive style: {self.cognitive_profile['style']}")
     
