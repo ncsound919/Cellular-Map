@@ -232,10 +232,21 @@ class CerebroUserProfile(BaseModel):
     preferences: Dict[str, Any] = Field(default_factory=dict)
 
 
+class CerebroInputType(str, Enum):
+    """Allowed input types for Cerebro queries"""
+    TEXT = "text"
+    VOICE = "voice"
+    NEURAL = "neural"
+    GESTURE = "gesture"
+
+
 class CerebroQuery(BaseModel):
     """Query submitted to Cerebro"""
     text: str = Field(..., description="Query text")
-    input_type: str = Field(default="text", description="Input type: text, voice, neural, gesture")
+    input_type: CerebroInputType = Field(
+        default=CerebroInputType.TEXT,
+        description="Input type: text, voice, neural, gesture"
+    )
     context: Optional[Dict[str, Any]] = None
 
 

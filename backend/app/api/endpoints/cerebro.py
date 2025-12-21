@@ -25,7 +25,7 @@ async def get_cerebro_status():
     
     Returns initialization status, user profile, and agent status
     """
-    cerebro = get_cerebro()
+    cerebro = await get_cerebro()
     return cerebro.get_status()
 
 
@@ -58,7 +58,7 @@ async def personalize_cerebro():
     
     Analyzes interaction patterns and adapts interface
     """
-    cerebro = get_cerebro()
+    cerebro = await get_cerebro()
     
     if not cerebro.initialized:
         raise HTTPException(
@@ -68,10 +68,17 @@ async def personalize_cerebro():
     
     await cerebro.personalize()
     
+    # Safely access cognitive profile
+    cognitive_profile = cerebro.cognitive_profile
+    if isinstance(cognitive_profile, dict) and "style" in cognitive_profile:
+        message = f"✓ Personalized to: {cognitive_profile['style']}"
+    else:
+        message = "✓ Personalized"
+    
     return {
         "status": "personalized",
         "cognitive_profile": cerebro.cognitive_profile,
-        "message": f"✓ Personalized to: {cerebro.cognitive_profile['style']}"
+        "message": message
     }
 
 
@@ -86,7 +93,7 @@ async def process_query(query: CerebroQuery):
     Returns:
         Enhanced response with copilot insights and predictions
     """
-    cerebro = get_cerebro()
+    cerebro = await get_cerebro()
     
     if not cerebro.initialized:
         raise HTTPException(
@@ -103,7 +110,7 @@ async def process_query(query: CerebroQuery):
         response=result,
         copilot_insights=result.get("copilot_thoughts", {}).get("suggestions", []),
         tap_speak=result.get("tap_speak"),
-        predicted_next=[],
+        predicted_next=result.get("predicted_next", []),
         status=result.get("status", "success")
     )
     
@@ -118,7 +125,7 @@ async def get_nightly_report():
     Returns:
         Daily discoveries, papers, patterns, and agenda
     """
-    cerebro = get_cerebro()
+    cerebro = await get_cerebro()
     
     if not cerebro.initialized:
         raise HTTPException(
@@ -146,7 +153,7 @@ async def interact(query: CerebroQuery):
     
     Real-time copilot thinking and feedback
     """
-    cerebro = get_cerebro()
+    cerebro = await get_cerebro()
     
     if not cerebro.initialized:
         raise HTTPException(

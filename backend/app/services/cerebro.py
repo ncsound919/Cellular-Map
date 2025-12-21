@@ -13,7 +13,6 @@ Integrates with NetworkCellularMap v2.0 to provide:
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 import asyncio
-import threading
 
 
 class UserModel:
@@ -69,6 +68,9 @@ class UserModel:
 class MemorySystem:
     """Episodic + Semantic memory for all experiments"""
     
+    # Configuration constants
+    MEMORY_RECALL_LIMIT = 10
+    
     def __init__(self):
         self.episodic_memory = []
         self.semantic_memory = {}
@@ -81,10 +83,8 @@ class MemorySystem:
     async def recall(self, query: str, context: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Recall relevant memories for query"""
         # Simple recall - in production would use vector similarity
-        # Configurable memory limit
-        MEMORY_RECALL_LIMIT = 10
         relevant = []
-        for memory in self.episodic_memory[-MEMORY_RECALL_LIMIT:]:  # Last N events
+        for memory in self.episodic_memory[-self.MEMORY_RECALL_LIMIT:]:  # Last N events
             relevant.append(memory)
         return relevant
     
@@ -209,6 +209,9 @@ class CerebroCore:
     "Big dogs eat first" - Your cognitive amplification system
     """
     
+    # Configuration constants
+    RECENT_EVENTS_LIMIT = 5
+    
     def __init__(self, user: Optional[Dict[str, Any]] = None):
         """Initialize Cerebro with user profile"""
         self.user = user or {"name": "Networkologist", "field": "Biotech"}
@@ -298,6 +301,10 @@ class CerebroCore:
         )
         await self.predictor.pre_cache_likely_needs(predictions)
         
+        # Expose predictions in the response for predictive intelligence
+        if isinstance(enhanced, dict):
+            enhanced["predicted_next"] = predictions
+        
         return enhanced
     
     async def get_full_context(self) -> Dict[str, Any]:
@@ -308,7 +315,7 @@ class CerebroCore:
             "current_focus": await self.user_model.get_current_focus(),
             "cognitive_state": await self.user_model.get_cognitive_state(),
             "time_of_day": datetime.now().isoformat(),
-            "recent_events": self.memory.episodic_memory[-5:] if self.memory.episodic_memory else []
+            "recent_events": self.memory.episodic_memory[-self.RECENT_EVENTS_LIMIT:] if self.memory.episodic_memory else []
         }
     
     async def nightly_report(self) -> Dict[str, Any]:
@@ -354,6 +361,10 @@ class CerebroCore:
         agenda = await self.agent.prepare_agenda()
         report["sections"]["Suggested Agenda for Tomorrow"] = agenda
         
+        # Add default message if no discoveries
+        if not report["sections"] or all(not v for v in report["sections"].values()):
+            report["sections"]["Summary"] = ["No new discoveries today. Autonomous agent continues monitoring."]
+        
         return report
     
     def get_status(self) -> Dict[str, Any]:
@@ -361,32 +372,32 @@ class CerebroCore:
         return {
             "initialized": self.initialized,
             "user": self.user.get("name", "Unknown"),
-            "cognitive_profile": self.cognitive_profile.get("style") if self.cognitive_profile else None,
+            "cognitive_profile": self.cognitive_profile.get("style") if isinstance(self.cognitive_profile, dict) else None,
             "agent_running": self.agent.running,
             "memory_size": len(self.memory.episodic_memory),
             "timestamp": datetime.now().isoformat()
         }
 
 
-# Global Cerebro instance with thread safety
-cerebro_instance: Optional[CerebroCore] = None
-_cerebro_lock = threading.Lock()
+# Global Cerebro instance with async-safe locking
+_cerebro_instance: Optional[CerebroCore] = None
+_cerebro_lock = asyncio.Lock()
 
 
-def get_cerebro() -> CerebroCore:
-    """Get or create Cerebro instance (thread-safe)"""
-    global cerebro_instance
-    with _cerebro_lock:
-        if cerebro_instance is None:
-            cerebro_instance = CerebroCore()
-        return cerebro_instance
+async def get_cerebro() -> CerebroCore:
+    """Get or create Cerebro instance (async-safe)"""
+    global _cerebro_instance
+    async with _cerebro_lock:
+        if _cerebro_instance is None:
+            _cerebro_instance = CerebroCore()
+        return _cerebro_instance
 
 
 async def initialize_cerebro(user: Optional[Dict[str, Any]] = None) -> CerebroCore:
-    """Initialize Cerebro system (thread-safe)"""
-    global cerebro_instance
-    with _cerebro_lock:
-        cerebro_instance = CerebroCore(user)
-        await cerebro_instance.start()
-        await cerebro_instance.personalize()
-        return cerebro_instance
+    """Initialize Cerebro system (async-safe)"""
+    global _cerebro_instance
+    async with _cerebro_lock:
+        _cerebro_instance = CerebroCore(user)
+        await _cerebro_instance.start()
+        await _cerebro_instance.personalize()
+        return _cerebro_instance

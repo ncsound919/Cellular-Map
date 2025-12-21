@@ -43,11 +43,16 @@ async def lifespan(app: FastAPI):
         print("   - TapSpeak active ✓")
         print("   - Autonomous agent: Running ✓")
         print("   - Learning from your patterns...")
-        print(f"   - Cognitive profile: {cerebro.cognitive_profile['style']}")
+        
+        # Safely access cognitive profile
+        cognitive_profile = getattr(cerebro, "cognitive_profile", None)
+        if isinstance(cognitive_profile, dict) and "style" in cognitive_profile:
+            print(f"   - Cognitive profile: {cognitive_profile['style']}")
+        
         print("\n   Ready to explore networkology!\n")
     except Exception as e:
-        print(f"⚠ Cerebro initialization warning: {e}")
-        print("  Cerebro features will be available via API endpoints")
+        print(f"⚠ Cerebro initialization failed: {e}")
+        print("  Cerebro-related features may be unavailable or limited for this session.")
     
     print("="*60 + "\n")
     
