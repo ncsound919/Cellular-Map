@@ -37,6 +37,23 @@ NetworkCellularMap v2.0 is a revolutionary bioinformatics platform that implemen
 - **OMIM API**: Genetic disorder database
 - **Entrez**: NCBI database access
 
+#### Composable Toolchain
+**Layer 1: Spatial/Network Core**
+- **Scanpy 1.10**: Single-cell preprocessing and analysis
+- **Squidpy 1.4**: Spatial omics and tissue graphs
+- **AnnData 0.10**: Annotated data structures with H5 backing
+
+**Layer 2: Training/AI**
+- **scvi-tools 1.1**: Probabilistic single-cell models
+
+**Layer 3: Federated Learning**
+- **FedLab 1.3**: Simulation-oriented federated learning
+- **OpenFL 1.5**: Production federated learning
+
+**Orchestration**
+- **Ruffus 2.8**: Lightweight pipeline framework
+- See [TOOLCHAIN.md](docs/TOOLCHAIN.md) for complete architecture
+
 ## Global Schemas
 
 ### CellAgnosticNode
