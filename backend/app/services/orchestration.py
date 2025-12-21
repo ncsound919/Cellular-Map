@@ -1,7 +1,6 @@
 """Orchestration utilities - Lightweight pipeline management without bloat"""
 from typing import Dict, Any, List, Callable, Optional
 from datetime import datetime
-import json
 
 
 class PipelineStage:
@@ -211,6 +210,12 @@ class NetworkologyDAG:
                     "stage": "ingest",
                     "error": f"Failed to import ingestion service: {str(e)}"
                 }
+            except Exception as e:
+                return {
+                    "status": "error",
+                    "stage": "ingest",
+                    "error": f"Unexpected error during ingest stage: {str(e)}"
+                }
         
         # Stage 2: Map
         def map_stage(inputs: Dict[str, Any]) -> Dict[str, Any]:
@@ -218,7 +223,7 @@ class NetworkologyDAG:
             try:
                 from .network import UniversalInteractomeService
                 
-                service = UniversalInteractomeService()
+                UniversalInteractomeService()
                 
                 return {
                     "status": "success",
@@ -234,6 +239,12 @@ class NetworkologyDAG:
                     "status": "error",
                     "stage": "map",
                     "error": f"Failed to import network service: {str(e)}"
+                }
+            except Exception as e:
+                return {
+                    "status": "error",
+                    "stage": "map",
+                    "error": f"Unexpected error during map stage: {str(e)}"
                 }
         
         # Stage 3: Analyze
@@ -255,6 +266,12 @@ class NetworkologyDAG:
                     "stage": "analyze",
                     "error": f"Failed to import AI scientist service: {str(e)}"
                 }
+            except Exception as e:
+                return {
+                    "status": "error",
+                    "stage": "analyze",
+                    "error": f"Unexpected error during analyze stage: {str(e)}"
+                }
         
         # Stage 4: Intervene
         def intervene_stage(inputs: Dict[str, Any]) -> Dict[str, Any]:
@@ -262,7 +279,7 @@ class NetworkologyDAG:
             try:
                 from .repair import RepairDesignService
                 
-                service = RepairDesignService()
+                RepairDesignService()
                 
                 return {
                     "status": "success",
@@ -276,6 +293,12 @@ class NetworkologyDAG:
                     "status": "error",
                     "stage": "intervene",
                     "error": f"Failed to import repair service: {str(e)}"
+                }
+            except Exception as e:
+                return {
+                    "status": "error",
+                    "stage": "intervene",
+                    "error": f"Unexpected error during intervene stage: {str(e)}"
                 }
         
         # Build DAG
@@ -307,7 +330,13 @@ class TapSpeakGenerator:
     Lightweight NLP without huge stack.
     """
     
-    def __init__(self, lexicon_path: str = "/tmp/tapspeak_lexicon.csv"):
+    def __init__(self, lexicon_path: Optional[str] = None):
+        import os
+        import tempfile
+        
+        if lexicon_path is None:
+            lexicon_path = os.path.join(tempfile.gettempdir(), "tapspeak_lexicon.csv")
+        
         self.lexicon_path = lexicon_path
         self.lexicon = {}
         self._load_lexicon()
@@ -371,15 +400,19 @@ class TapSpeakGenerator:
         """Export lexicon to CSV"""
         import csv
         
-        with open(self.lexicon_path, 'w', newline='') as f:
-            writer = csv.DictWriter(f, fieldnames=['term', 'hook', 'explanation'])
-            writer.writeheader()
-            for term, data in self.lexicon.items():
-                writer.writerow({
-                    'term': term,
-                    'hook': data['hook'],
-                    'explanation': data['explanation']
-                })
+        try:
+            with open(self.lexicon_path, 'w', newline='') as f:
+                writer = csv.DictWriter(f, fieldnames=['term', 'hook', 'explanation'])
+                writer.writeheader()
+                for term, data in self.lexicon.items():
+                    writer.writerow({
+                        'term': term,
+                        'hook': data['hook'],
+                        'explanation': data['explanation']
+                    })
+        except (OSError, IOError, PermissionError) as e:
+            error_msg = f"Failed to export lexicon to CSV at '{self.lexicon_path}': {e}"
+            raise RuntimeError(error_msg) from e
 
 
 class BBTechMetrics:
@@ -434,12 +467,21 @@ class BBTechMetrics:
             return 0.0
         return math.log(hub_degree + 1) * hub_betweenness
     
-    def export_to_csv(self, filepath: str = "/tmp/bbtech_metrics.csv"):
+    def export_to_csv(self, filepath: Optional[str] = None):
         """Export metrics to CSV"""
         import csv
+        import os
+        import tempfile
         
-        with open(filepath, 'w', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(['metric', 'value', 'timestamp'])
-            for name, value in self.metrics.items():
-                writer.writerow([name, value, datetime.now().isoformat()])
+        if filepath is None:
+            filepath = os.path.join(tempfile.gettempdir(), "bbtech_metrics.csv")
+        
+        try:
+            with open(filepath, 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(['metric', 'value', 'timestamp'])
+                for name, value in self.metrics.items():
+                    writer.writerow([name, value, datetime.now().isoformat()])
+        except (OSError, IOError, PermissionError) as e:
+            error_msg = f"Failed to export metrics to CSV at '{filepath}': {e}"
+            raise RuntimeError(error_msg) from e

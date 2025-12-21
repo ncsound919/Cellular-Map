@@ -1,6 +1,6 @@
 """Federated Learning Service - FedLab/OpenFL integration for global adoption"""
 import numpy as np
-from typing import Dict, Any, List, Optional, Callable
+from typing import Dict, Any, List, Optional
 import json
 
 
@@ -159,6 +159,14 @@ class FederatedLearningService:
         Dict[str, Any]
             Updated model state and training metrics (simulated values only)
         """
+        # Runtime guard: prevent accidental production use
+        if self.mode == "production":
+            raise NotImplementedError(
+                "Federated training round is not implemented for production mode. "
+                "This method currently only supports simulation with placeholder values. "
+                "For production use, integrate with FedLab or OpenFL training loops."
+            )
+        
         # TODO: Replace with actual federated training when FedLab/OpenFL is fully integrated
         # Current implementation is for simulation/demonstration purposes only
         
@@ -281,8 +289,14 @@ class FederatedLearningService:
         return {
             "status": "success",
             "privacy_config": config,
-            "gdpr_compliant": True,
-            "hipaa_compatible": True
+            # These flags indicate intended support for GDPR/HIPAA-friendly settings,
+            # but this function does not perform formal regulatory compliance validation.
+            "gdpr_compliant": False,
+            "hipaa_compatible": False,
+            "compliance_note": (
+                "This configuration is designed to support privacy best practices, "
+                "but GDPR/HIPAA compliance must be assessed and validated separately."
+            )
         }
     
     def cross_hospital_training(
@@ -380,20 +394,26 @@ class FederatedLearningService:
             "total_samples": sum(c["data_samples"] for c in citizens + clinics)
         }
     
-    def export_federation_config(self, filepath: str = "/tmp/federation_config.json") -> str:
+    def export_federation_config(self, filepath: Optional[str] = None) -> str:
         """
         Export federation configuration for deployment.
         
         Parameters
         ----------
-        filepath : str
-            Path to save configuration file
+        filepath : Optional[str]
+            Path to save configuration file. If None, uses a temp directory.
             
         Returns
         -------
         str
             Path to saved configuration
         """
+        import os
+        import tempfile
+        
+        if filepath is None:
+            filepath = os.path.join(tempfile.gettempdir(), "federation_config.json")
+        
         config = {
             "mode": self.mode,
             "clients": self.clients,
@@ -401,7 +421,11 @@ class FederatedLearningService:
             "version": "1.0.0"
         }
         
-        with open(filepath, 'w') as f:
-            json.dump(config, f, indent=2)
+        try:
+            with open(filepath, 'w') as f:
+                json.dump(config, f, indent=2)
+        except (OSError, IOError, PermissionError) as e:
+            error_msg = f"Failed to export federation config to '{filepath}': {e}"
+            raise RuntimeError(error_msg) from e
         
         return filepath

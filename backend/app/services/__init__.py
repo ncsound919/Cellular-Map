@@ -25,7 +25,7 @@ __all__ = [
     "NetworkVulnerabilityService",
     "CodexMetricsService",
     "RepairDesignService",
-    # New composable toolchain services
+    # Composable toolchain services
     "SpatialOmicsService",
     "FederatedLearningService",
     "NetworkologyPipeline",

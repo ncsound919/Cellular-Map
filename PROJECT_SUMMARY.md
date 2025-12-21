@@ -245,7 +245,7 @@ Features: Auto-scaling, clustering, load balancing, persistence
 - **K8s Ready**: ✅ Yes
 - **Documentation**: ✅ Complete
 
-## Composable Toolchain (NEW)
+## Composable Toolchain
 
 ### Overview
 Added a **small, composable toolchain** with three distinct layers that avoid monolithic architecture and keep the Networkology + TapSpeak stack lean.

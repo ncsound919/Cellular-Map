@@ -205,7 +205,7 @@ def example_integration():
     # Orchestration
     print("\nORCHESTRATION:")
     print("   Using NetworkologyDAG for complete workflow...")
-    dag_results = example_orchestration()
+    example_orchestration()
     
     print("\n=== Integration Complete ===")
     print("\nThe composable toolchain successfully integrates:")

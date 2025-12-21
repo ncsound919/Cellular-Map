@@ -304,29 +304,18 @@ class SpatialOmicsService:
         Returns
         -------
         Dict[str, Any]
-            Extracted image features (placeholder)
+            Extracted image features
+            
+        Raises
+        ------
+        NotImplementedError
+            This method is not yet implemented
         """
-        try:
-            import squidpy as sq
-            
-            if self.adata is None or 'spatial' not in self.adata.obsm:
-                return {"error": "Spatial coordinates not set. Run build_spatial_neighborhood_graph first."}
-            
-            # TODO: Implement actual image feature extraction
-            # This requires loading image data and processing at spatial locations
-            
-            return {
-                "status": "placeholder",
-                "features": features,
-                "n_locations": len(spatial_coords),
-                "note": "Placeholder - requires actual image data and full Squidpy implementation"
-            }
-            
-        except ImportError:
-            return {
-                "status": "error",
-                "message": "Squidpy not installed. Install with: pip install squidpy"
-            }
+        raise NotImplementedError(
+            "Image feature extraction is not yet implemented. "
+            "This requires loading actual tissue image data and a full Squidpy pipeline. "
+            "Please use spatial neighborhood graphs instead, or implement this feature with real image data."
+        )
     
     def integrate_with_network_map(
         self,
