@@ -1,14 +1,41 @@
-# NetworkCellularMap v2.0
+# NetworkCellularMap v2.0 + Cerebro
 
 **Networkology Core Engine - Organ Agnostic Network Diagnosis**
+**+ Cerebro Autonomous Copilot - "Big dogs eat first"**
 
 ## Overview
 
 NetworkCellularMap v2.0 is a revolutionary bioinformatics platform that implements organ-agnostic network diagnosis. Instead of treating organ-specific symptoms, it targets the underlying network dysfunction at the cellular level.
 
+**NEW: Cerebro Integration** - An autonomous AI copilot that works 24/7, learns your cognitive style, and amplifies your research capabilities.
+
 ### Core Principle
 
 > Single mutation propagates across all cells; target network dysfunction, not organ symptoms.
+
+## 🧠 Cerebro - Autonomous Networkologist Copilot
+
+Cerebro extends NetworkCellularMap with cognitive amplification:
+
+- **🤖 Autonomous Agent**: Works while you sleep, discovering new hubs and patterns
+- **🎯 Cognitive Personalization**: Adapts to your thinking style ("Curry contagion thinker")
+- **💡 Real-time Copilot**: Thinks alongside you during analysis
+- **🔮 Predictive Intelligence**: Anticipates your next moves and pre-caches data
+- **💬 TapSpeak Integration**: Plain English translation of all insights
+
+**See [CEREBRO.md](docs/CEREBRO.md) for full documentation.**
+
+### Cerebro Startup
+
+When you start the application:
+```
+🧠 Cerebro.Networkology - Big dogs eat first
+   - SpatialGCN loaded ✓
+   - TapSpeak active ✓
+   - Autonomous agent: Running ✓
+   - Learning from your patterns...
+   - Cognitive profile: Curry contagion thinker
+```
 
 ## Architecture
 
@@ -125,7 +152,45 @@ BioKleisli queries join data across sources based on universal genomic positions
 
 See [TapSpeak Documentation](docs/TAPSPEAK.md) for full details.
 
+### 7. Cerebro Autonomous Copilot
+**Cognitive Amplification System**:
+- Autonomous agent running 24/7
+- Cognitive profiling ("Curry contagion thinker")
+- Real-time copilot feedback
+- Predictive intelligence
+- Nightly discovery reports
+
+See [Cerebro Documentation](docs/CEREBRO.md) for full details.
+
 ## API Endpoints
+
+### Cerebro Endpoints
+
+#### GET /api/v1/cerebro/status
+Get Cerebro system status and cognitive profile
+
+#### POST /api/v1/cerebro/initialize
+Initialize Cerebro with user profile
+```json
+{
+  "name": "Dr. Smith",
+  "field": "Biotech"
+}
+```
+
+#### POST /api/v1/cerebro/process_query
+Process query with autonomous copilot
+```json
+{
+  "text": "Design CRISPR for obesity hubs",
+  "input_type": "text"
+}
+```
+
+#### GET /api/v1/cerebro/nightly_report
+Get autonomous agent's overnight discoveries
+
+### Core Networkology Endpoints
 
 ### POST /api/v1/networkologist/diagnose
 Diagnose patient with organ-agnostic analysis

@@ -15,21 +15,51 @@ from app.db.neo4j import db_connection
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
     # Startup
-    print("Starting NetworkCellularMap v2.0...")
+    print("\n" + "="*60)
+    print("🧠 NetworkCellularMap v2.0 + Cerebro.Networkology")
+    print("="*60)
+    print("\nInitializing systems...")
+    
+    # Database initialization
     try:
         db_connection.connect()
         db_connection.initialize_schema()
-        print("Database connected and schema initialized")
+        print("✓ Database connected and schema initialized")
     except Exception as e:
-        print(f"CRITICAL: Database connection failed: {e}")
-        print("Application requires database connection. Please check Neo4j configuration.")
+        print(f"⚠ Database connection failed: {e}")
+        print("  Application requires database connection. Please check Neo4j configuration.")
         # For production, uncomment the line below to fail fast:
         # raise
+    
+    # Cerebro initialization
+    try:
+        from app.services.cerebro import initialize_cerebro
+        cerebro = await initialize_cerebro({
+            "name": "Networkologist",
+            "field": "Biotech"
+        })
+        print("\n🧠 Cerebro.Networkology - Big dogs eat first")
+        print("   - SpatialGCN loaded ✓")
+        print("   - TapSpeak active ✓")
+        print("   - Autonomous agent: Running ✓")
+        print("   - Learning from your patterns...")
+        
+        # Safely access cognitive profile
+        cognitive_profile = getattr(cerebro, "cognitive_profile", None)
+        if isinstance(cognitive_profile, dict) and "style" in cognitive_profile:
+            print(f"   - Cognitive profile: {cognitive_profile['style']}")
+        
+        print("\n   Ready to explore networkology!\n")
+    except Exception as e:
+        print(f"⚠ Cerebro initialization failed: {e}")
+        print("  Cerebro-related features may be unavailable or limited for this session.")
+    
+    print("="*60 + "\n")
     
     yield
     
     # Shutdown
-    print("Shutting down NetworkCellularMap v2.0...")
+    print("\nShutting down NetworkCellularMap v2.0...")
     db_connection.close()
 
 
@@ -67,6 +97,17 @@ async def root():
         "version": "2.0",
         "paradigm": "organ_agnostic_network_diagnosis",
         "core_principle": "Single mutation propagates across all cells; target network dysfunction not organ symptoms",
+        "cerebro": {
+            "enabled": True,
+            "tagline": "Big dogs eat first - Autonomous networkologist copilot",
+            "features": [
+                "Autonomous agent (works 24/7)",
+                "Cognitive personalization",
+                "Real-time copilot",
+                "Predictive intelligence",
+                "TapSpeak translation"
+            ]
+        },
         "status": "running"
     }
 

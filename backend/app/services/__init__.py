@@ -13,6 +13,7 @@ from .orchestration import (
     TapSpeakGenerator,
     BBTechMetrics
 )
+from .cerebro import CerebroCore, get_cerebro, initialize_cerebro
 
 __all__ = [
     # Core services
@@ -32,4 +33,8 @@ __all__ = [
     "NetworkologyDAG",
     "TapSpeakGenerator",
     "BBTechMetrics",
+    # Cerebro autonomous agent
+    "CerebroCore",
+    "get_cerebro",
+    "initialize_cerebro",
 ]

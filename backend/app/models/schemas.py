@@ -220,3 +220,59 @@ class TapSpeakDashboardData(BaseModel):
     bbtech_mappings: List[BBTechMapping]
     total_translations: int
     average_confidence: ConfidenceMetrics
+
+
+# ===== Cerebro Models =====
+
+class CerebroUserProfile(BaseModel):
+    """User profile for Cerebro personalization"""
+    name: str = Field(..., description="User name")
+    field: str = Field(default="Biotech", description="Research field")
+    cognitive_style: Optional[str] = Field(None, description="Detected cognitive style")
+    preferences: Dict[str, Any] = Field(default_factory=dict)
+
+
+class CerebroInputType(str, Enum):
+    """Allowed input types for Cerebro queries"""
+    TEXT = "text"
+    VOICE = "voice"
+    NEURAL = "neural"
+    GESTURE = "gesture"
+
+
+class CerebroQuery(BaseModel):
+    """Query submitted to Cerebro"""
+    text: str = Field(..., description="Query text")
+    input_type: CerebroInputType = Field(
+        default=CerebroInputType.TEXT,
+        description="Input type: text, voice, neural, gesture"
+    )
+    context: Optional[Dict[str, Any]] = None
+
+
+class CerebroResponse(BaseModel):
+    """Response from Cerebro query processing"""
+    query: CerebroQuery
+    response: Dict[str, Any]
+    copilot_insights: List[str] = Field(default_factory=list)
+    tap_speak: Optional[str] = None
+    predicted_next: List[str] = Field(default_factory=list)
+    status: str = "success"
+
+
+class CerebroReport(BaseModel):
+    """Nightly report from autonomous agent"""
+    title: str
+    date: str
+    sections: Dict[str, List[Any]]
+    summary: Optional[str] = None
+
+
+class CerebroStatus(BaseModel):
+    """Current status of Cerebro system"""
+    initialized: bool
+    user: str
+    cognitive_profile: Optional[str]
+    agent_running: bool
+    memory_size: int
+    timestamp: str
