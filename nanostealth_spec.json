@@ -1,0 +1,246 @@
+{
+  "NanoStealth": {
+    "version": "1.0.0",
+    "purpose": "Closed-loop nanomedicine R&D engine that optimizes liver-bypass stealth formulations, gates them through Codex metrics, and scouts IP opportunities.",
+    "core_engine": {
+      "implementation": "codex_engine.py",
+      "metrics_used": ["Trueness", "Tap10", "Flow", "PCS", "RPS", "CU"],
+      "thresholds": {
+        "Trueness": 0.60,
+        "Tap10": 0.50,
+        "Flow": 0.55,
+        "PCS": 0.62,
+        "RPS": 0.50,
+        "CU": 0.50
+      }
+    },
+    "biotech_mapping": {
+      "Trueness": {
+        "role": "Liver Bypass / Signal vs Baggage",
+        "inputs": {
+          "A": "target_organ_binding_fraction",
+          "B": "liver_sequestration_fraction",
+          "N": "off_target_background_noise"
+        },
+        "logic": "T_raw = A / max(B + N, 0.1); Trueness = sigmoid(k_trueness * (T_raw - 1.0)) clamped to [0,1]",
+        "gate": "Trueness >= 0.60 required to label a formulation as 'effective liver bypass'"
+      },
+      "Flow": {
+        "role": "Dwell Time Optimization / Inverse Drag in liver sinusoids",
+        "inputs": {
+          "I": "injection_or_initiation_quality",
+          "D": "measured_or_estimated_liver_dwell_time",
+          "D_max": "maximum_acceptable_dwell_time",
+          "R": "resource_or_blood_flow_factor"
+        },
+        "logic": "D_prime = min(D_max / max(D,1.0), 1.0); Flow = I * D_prime * R",
+        "gate": "Flow >= 0.55 indicates acceptable biological drag and throughput"
+      },
+      "CU": {
+        "role": "Generalist Cargo Check / Capacity Utilization",
+        "inputs": {
+          "G": "carrier_or_vehicle_quality",
+          "R": "receptor_or_binding_site_quality",
+          "P": "payload_quality_or_stability"
+        },
+        "logic": "CU = G * R * P (weakest link drags capacity down)",
+        "gate": "CU >= 0.50 required to advance as viable carrier–payload–receptor combo"
+      },
+      "PCS": {
+        "role": "Partner/Target Fit (organ, indication, or receptor mapping)",
+        "inputs": {
+          "weights": "map_of_target_or_partner_weights",
+          "values": "map_of_target_or_partner_scores"
+        },
+        "logic": "PCS = Σ(weights_k * values_k) after weight normalization",
+        "gate": "PCS >= 0.62 indicates strong fit to chosen indication/target"
+      },
+      "RPS": {
+        "role": "Rollout Priority / IP & ROI Ranking",
+        "inputs": {
+          "S": "scientific_strength_or_efficacy_score",
+          "ROI": "economic_or_strategic_return_score",
+          "PF": "pain_factor_or_cost_burden",
+          "R": "risk_level",
+          "alpha": "weight_for_S",
+          "beta": "weight_for_ROI",
+          "gamma": "weight_for_PF"
+        },
+        "logic": "Gain = α*S + β*ROI + γ*PF (weights normalized); RPS = Gain * (1 - Risk)",
+        "gate": "RPS >= 0.50 to prioritize for patenting/licensing or further development"
+      }
+    },
+    "one_knob_sensitivity": {
+      "role": "Draft Prospect Scout for formulation tuning",
+      "config": {
+        "delta_default": 0.05,
+        "drivers": [
+          "Trueness.A",
+          "Trueness.B",
+          "Trueness.N",
+          "Flow.I",
+          "Flow.D",
+          "Flow.R",
+          "CU.G",
+          "CU.R",
+          "CU.P"
+        ]
+      },
+      "logic": "For each driver, nudge by +delta (or +delta*D_max for D), recompute {Trueness, Flow, PCS, RPS, CU}, and record Δscore.",
+      "output": {
+        "top_impacts": "Top 3 (metric, driver, delta, change) by |change|.",
+        "use": "Identifies which single lab or formulation tweak (e.g., PEG_density, particle_size, surface_charge) yields the largest boost in composite performance."
+      }
+    },
+    "ip_strategy": {
+      "mode": "Patenting_by_Prediction",
+      "layers": {
+        "core_innovation": {
+          "subject_matter": "Scoring system and liver-bypass optimization logic (S_c concept built from Trueness, Flow, CU, PCS, RPS).",
+          "IP_action": "File early patents on the generic scoring framework and liver-bypass stealth selection algorithm."
+        },
+        "optimization_filings": {
+          "subject_matter": "Specific nanoparticle 'recipes' and parameter ranges identified by One-Knob Sensitivity and Codex pass states.",
+          "IP_action": "File follow-on patents on specific compositions, surface chemistries, and process parameters that consistently achieve GO status with high RPS."
+        },
+        "trade_secrets": {
+          "subject_matter": [
+            "Exact internal thresholds for systemic_collapse (e.g., max_dwell_time, max_sequestration_ratio).",
+            "Proprietary scaling of A,B,N and finely tuned k_trueness.",
+            "Full driver list and delta strategy for One-Knob sensitivity."
+          ],
+          "IP_action": "Retain as confidential in internal SOPs and software config, not disclosed in patent text."
+        }
+      }
+    },
+    "closed_loop_lab": {
+      "data_flow": {
+        "inputs_from_lab": {
+          "P_corona": "measured_protein_corona_profile",
+          "biodistribution": "organ_level_accumulation_data",
+          "pharmacokinetics": "time_course_concentration_curves",
+          "toxicity": "liver_injury_markers_and_off_target_effects"
+        },
+        "model_update": {
+          "k_trueness_update_rule": "Adjust k_trueness when systematic bias observed between predicted vs actual P_corona or organ ratios.",
+          "scaler_updates": "Update scalers (means, mins, maxes) with new experimental batches."
+        }
+      },
+      "self_driving_integration": {
+        "synthetic_instruction_set": {
+          "fields": [
+            "target_pH",
+            "reaction_temperature",
+            "mixing_speed",
+            "reaction_time",
+            "PEG_chain_length",
+            "PEG_density",
+            "lipid_or_polymer_ratios",
+            "wash_cycles",
+            "post_processing_steps"
+          ],
+          "source": "Generated from formulations that achieve GO with high RPS and sensitivity gains.",
+          "consumer": "Robotic synthesis platform or lab automation system."
+        }
+      }
+    },
+    "decision_table": {
+      "columns": [
+        "Codex_Metric",
+        "Biotech_Solution",
+        "IP_Value_Logic"
+      ],
+      "rows": [
+        {
+          "Codex_Metric": "Trueness",
+          "Biotech_Solution": "Liver Bypass (stealth coating effectiveness)",
+          "IP_Value_Logic": "Defines the novelty and functional advantage of the stealth architecture; supports claims that specific surface chemistries achieve superior non-hepatic targeting."
+        },
+        {
+          "Codex_Metric": "Flow",
+          "Biotech_Solution": "Dwell Time Optimization in liver and circulation",
+          "IP_Value_Logic": "Protects methods of reducing biological drag and sinusoidal trapping through defined process parameters and composition adjustments."
+        },
+        {
+          "Codex_Metric": "PCS",
+          "Biotech_Solution": "Organ / receptor / indication-specific targeting fit",
+          "IP_Value_Logic": "Secures use-case claims for particular organs, receptors, or disease indications and their matching nanoparticle designs."
+        },
+        {
+          "Codex_Metric": "RPS",
+          "Biotech_Solution": "Rollout Priority and licensing target ranking",
+          "IP_Value_Logic": "Supports portfolio selection and licensing rationale; identifies which formulations to push into partnered development first."
+        },
+        {
+          "Codex_Metric": "CU",
+          "Biotech_Solution": "Generalist Cargo / Capacity Utilization",
+          "IP_Value_Logic": "Enables protection around versatile carrier platforms that maintain high capacity across multiple payloads and receptors."
+        }
+      ]
+    },
+    "io_contract": {
+      "codex_input_example": {
+        "thresholds": {
+          "Trueness": 0.60,
+          "Flow": 0.55,
+          "PCS": 0.62,
+          "RPS": 0.50,
+          "CU": 0.50
+        },
+        "params": {
+          "k_trueness": 3.0,
+          "D_max_default": 10.0
+        },
+        "inputs": {
+          "Trueness": {
+            "A": 0.80,
+            "B": 0.30,
+            "N": 0.10
+          },
+          "Flow": {
+            "I": 0.70,
+            "D": 2.5,
+            "D_max": 10.0,
+            "R": 0.80
+          },
+          "CU": {
+            "G": 0.75,
+            "R": 0.70,
+            "P": 0.85
+          },
+          "PCS": {
+            "weights": {
+              "liver": 0.1,
+              "lung": 0.2,
+              "tumor_target": 0.7
+            },
+            "values": {
+              "liver": 0.2,
+              "lung": 0.5,
+              "tumor_target": 0.9
+            }
+          },
+          "RPS": {
+            "S": 0.8,
+            "ROI": 0.9,
+            "PF": 0.4,
+            "R": 0.3,
+            "alpha": 0.4,
+            "beta": 0.4,
+            "gamma": 0.2
+          },
+          "one_knob": {
+            "delta": 0.05,
+            "drivers": [
+              "Trueness.A",
+              "Trueness.B",
+              "Flow.D",
+              "CU.G",
+              "CU.P"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
