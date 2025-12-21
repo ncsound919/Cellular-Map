@@ -1,6 +1,6 @@
 """Main API router"""
 from fastapi import APIRouter
-from .endpoints import networkologist, universal_hub, repair_design, tapspeak
+from .endpoints import networkologist, universal_hub, repair_design, tapspeak, cerebro
 
 api_router = APIRouter()
 
@@ -26,4 +26,9 @@ api_router.include_router(
     tapspeak.router,
     prefix="/tapspeak",
     tags=["tapspeak"]
+)
+
+api_router.include_router(
+    cerebro.router,
+    tags=["cerebro"]
 )
