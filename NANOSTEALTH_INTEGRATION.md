@@ -209,7 +209,7 @@ docker run -d \
   -e spring.datasource.url=jdbc:postgresql://host.docker.internal:5432/fhir \
   -e spring.datasource.username=nanostealth \
   -e spring.datasource.password=your_secure_password \
-  hapiproject/hapi:latest
+  hapiproject/hapi:v7.0.2
 
 # Wait for startup
 sleep 30
@@ -343,7 +343,7 @@ docker run -d \
   --name nextcloud \
   -p 8082:80 \
   -v nextcloud_data:/var/www/html \
-  nextcloud:latest
+  nextcloud:28.0.1
 ```
 
 #### Mattermost for Communication
