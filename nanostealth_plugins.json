@@ -1,0 +1,246 @@
+{
+  "nanostealth_plugins": {
+    "version": "1.0.0",
+    "description": "Modular plugin configuration for NanoStealth platform",
+    "plugins": {
+      "experiment_logger": {
+        "enabled": true,
+        "type": "data_logging.ExperimentLogger",
+        "priority": 100,
+        "config": {
+          "storage_backend": "postgresql",
+          "data_dir": "./data/experiments",
+          "enable_parquet": true,
+          "postgresql": {
+            "host": "localhost",
+            "port": 5432,
+            "database": "nanostealth",
+            "user": "nanostealth",
+            "password": "${POSTGRES_PASSWORD}"
+          }
+        },
+        "metadata": {
+          "category": "data_logging",
+          "description": "Stores experiment runs with full provenance tracking",
+          "dependencies": ["postgresql", "pandas"]
+        }
+      },
+      "metrics_dashboard": {
+        "enabled": true,
+        "type": "data_logging.MetricsDashboard",
+        "priority": 100,
+        "config": {
+          "storage_backend": "postgresql",
+          "enable_prometheus": true,
+          "postgresql": {
+            "host": "localhost",
+            "port": 5432,
+            "database": "nanostealth",
+            "user": "nanostealth",
+            "password": "${POSTGRES_PASSWORD}"
+          }
+        },
+        "metadata": {
+          "category": "data_logging",
+          "description": "Analytics and visualization for Trueness/Flow/Toxicity metrics",
+          "dependencies": ["postgresql", "prometheus-client"]
+        }
+      },
+      "object_storage": {
+        "enabled": true,
+        "type": "storage.ObjectStoragePlugin",
+        "priority": 90,
+        "config": {
+          "default_bucket": "nanostealth-data",
+          "s3": {
+            "endpoint_url": "http://localhost:9000",
+            "access_key": "${S3_ACCESS_KEY}",
+            "secret_key": "${S3_SECRET_KEY}",
+            "region": "us-east-1"
+          },
+          "postgresql": {
+            "host": "localhost",
+            "port": 5432,
+            "database": "nanostealth",
+            "user": "nanostealth",
+            "password": "${POSTGRES_PASSWORD}"
+          }
+        },
+        "metadata": {
+          "category": "storage",
+          "description": "S3-compatible object storage for raw data files",
+          "dependencies": ["boto3", "postgresql"]
+        }
+      },
+      "data_ingest": {
+        "enabled": true,
+        "type": "storage.DataIngestService",
+        "priority": 85,
+        "config": {
+          "watch_directories": [
+            "/mnt/lab-drive",
+            "/mnt/instrument-data"
+          ],
+          "postgresql": {
+            "host": "localhost",
+            "port": 5432,
+            "database": "nanostealth",
+            "user": "nanostealth",
+            "password": "${POSTGRES_PASSWORD}"
+          }
+        },
+        "metadata": {
+          "category": "storage",
+          "description": "Auto-registers files from WebDAV/SMB mounts with hash tracking",
+          "dependencies": ["postgresql"]
+        }
+      },
+      "sensor_microservice": {
+        "enabled": true,
+        "type": "hardware.SensorMicroservice",
+        "priority": 80,
+        "config": {
+          "communication_mode": "mqtt",
+          "simulation_mode": true,
+          "mqtt": {
+            "broker": "localhost",
+            "port": 1883,
+            "username": "${MQTT_USERNAME}",
+            "password": "${MQTT_PASSWORD}"
+          },
+          "mqtt_topic": "nanostealth/sensors",
+          "sensors": {
+            "dls": {
+              "enabled": true,
+              "device_id": "/dev/ttyUSB0"
+            },
+            "spectroscopy": {
+              "enabled": true,
+              "device_id": "/dev/ttyUSB1"
+            },
+            "ph": {
+              "enabled": true,
+              "device_id": "/dev/ttyUSB2"
+            }
+          }
+        },
+        "metadata": {
+          "category": "hardware",
+          "description": "Abstraction layer for lab sensors (DLS, spectroscopy, pH)",
+          "dependencies": ["paho-mqtt"]
+        }
+      },
+      "actuator_microservice": {
+        "enabled": true,
+        "type": "hardware.ActuatorMicroservice",
+        "priority": 80,
+        "config": {
+          "simulation_mode": true,
+          "actuators": {
+            "pump_01": {
+              "type": "pump",
+              "max_flow_rate": 10.0
+            },
+            "valve_01": {
+              "type": "valve",
+              "states": ["open", "closed"]
+            },
+            "shaker_01": {
+              "type": "shaker",
+              "max_rpm": 300
+            }
+          }
+        },
+        "metadata": {
+          "category": "hardware",
+          "description": "Control layer for pumps, valves, shakers via Arduino/ESP32",
+          "dependencies": []
+        }
+      },
+      "message_bus": {
+        "enabled": true,
+        "type": "orchestration.MessageBusPlugin",
+        "priority": 95,
+        "config": {
+          "bus_type": "mqtt",
+          "mqtt": {
+            "broker": "localhost",
+            "port": 1883,
+            "username": "${MQTT_USERNAME}",
+            "password": "${MQTT_PASSWORD}"
+          }
+        },
+        "metadata": {
+          "category": "orchestration",
+          "description": "Event-driven messaging for run_completed, measurement_ready, etc.",
+          "dependencies": ["paho-mqtt"]
+        }
+      },
+      "workflow_orchestrator": {
+        "enabled": true,
+        "type": "orchestration.WorkflowOrchestrator",
+        "priority": 90,
+        "config": {
+          "engine_type": "builtin"
+        },
+        "metadata": {
+          "category": "orchestration",
+          "description": "HTTP/gRPC wrapper for workflow engine integration (IvoryOS, Windmill)",
+          "dependencies": []
+        }
+      }
+    },
+    "global_settings": {
+      "enable_security": true,
+      "enable_audit_logging": true,
+      "max_concurrent_plugins": 20,
+      "plugin_timeout_seconds": 300
+    },
+    "integration": {
+      "prometheus": {
+        "enabled": true,
+        "endpoint": "http://localhost:9090",
+        "scrape_interval": "15s"
+      },
+      "grafana": {
+        "enabled": true,
+        "endpoint": "http://localhost:3001",
+        "dashboards": {
+          "nanostealth_metrics": {
+            "refresh": "30s",
+            "time_range": "24h"
+          }
+        }
+      },
+      "eln": {
+        "type": "elabftw",
+        "enabled": false,
+        "endpoint": "http://localhost:3000",
+        "api_key": "${ELN_API_KEY}"
+      },
+      "fhir": {
+        "enabled": true,
+        "server_url": "http://localhost:8080/fhir",
+        "auth_enabled": false
+      }
+    },
+    "deployment": {
+      "docker_compose": {
+        "file": "docker-compose-nanostealth.yml",
+        "services": [
+          "postgres",
+          "redis",
+          "minio",
+          "mqtt-broker",
+          "prometheus",
+          "grafana"
+        ]
+      },
+      "kubernetes": {
+        "enabled": false,
+        "namespace": "nanostealth",
+        "replicas": 3
+      }
+    }
+  }
+}

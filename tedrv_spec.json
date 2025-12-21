@@ -1,0 +1,345 @@
+{
+  "TED-RV": {
+    "name": "Therapeutic Epitope Design & Real-Time Validation Workstation",
+    "version": "1.0.0",
+    "description": "AI-driven platform for personalized T-cell therapy design in 72 hours",
+    "core_concept": "Fully integrated workflow combining computational prediction, cellular engineering, and spatial validation using 2025's breakthrough technologies",
+    
+    "enabling_technologies": {
+      "alphafold3": {
+        "description": "AlphaFold 3's 50-200% improvement in protein interaction prediction",
+        "capabilities": [
+          "Accurate peptide-MHC-TCR complex modeling",
+          "Holistic diffusion network predictions",
+          "ipTM > 0.92 for antibody-antigen complexes",
+          "90%+ accuracy for neoepitope binding prediction"
+        ],
+        "api_endpoint": "https://api.alphafold3.ai/v1",
+        "confidence_threshold": 0.85
+      },
+      "crispr3": {
+        "description": "CRISPR 3.0 adaptive editing with AI-designed enzymes",
+        "capabilities": [
+          "Real-time cellular feedback loops",
+          "Dynamic calibration during treatment",
+          "<0.2% off-target editing rate",
+          ">99.8% on-target precision",
+          ">95% cell viability maintenance"
+        ],
+        "workstation_url": "http://localhost:8001/crispr3",
+        "off_target_threshold": 0.002,
+        "on_target_minimum": 0.95
+      },
+      "raefish": {
+        "description": "Sequencing-free spatial transcriptomics at single-molecule resolution",
+        "capabilities": [
+          "Direct spatial readout of guide RNAs",
+          "Single-molecule resolution imaging",
+          ">23,000 gene detection",
+          "36-hour imaging workflow",
+          "Engineered gRNA sequence visualization"
+        ],
+        "imager_url": "http://localhost:8002/raefish",
+        "resolution_nm": 100,
+        "gene_coverage": 23000
+      },
+      "protein_llm": {
+        "description": "Protein Large Language Models for epitope optimization",
+        "capabilities": [
+          "Immunogenicity prediction",
+          "Cross-reactivity risk assessment",
+          "Epitope sequence optimization",
+          "Safety profile evaluation"
+        ],
+        "api_endpoint": "https://api.proteinllm.ai/v1",
+        "immunogenicity_threshold": 0.7
+      }
+    },
+    
+    "workflow_modules": {
+      "module1_neoepitope_prediction": {
+        "name": "Neoepitope Prediction Suite",
+        "duration_hours": 12,
+        "inputs": [
+          "Patient tumor WES/WGS",
+          "Patient HLA typing (up to 12,000+ variants)",
+          "Normal tissue baseline"
+        ],
+        "process": [
+          "Extract mutant peptides from tumor variants",
+          "AlphaFold 3 binding affinity prediction for all peptide-MHC combinations",
+          "Protein LLM refinement for immunogenicity",
+          "Safety screening for cross-reactivity",
+          "Rank top 10 targetable neoepitopes"
+        ],
+        "outputs": [
+          "Top 10 neoepitopes with 3D structures",
+          "Binding affinity scores (nM)",
+          "AlphaFold 3 confidence scores",
+          "Immunogenicity predictions",
+          "PDB structure files"
+        ],
+        "parameters": {
+          "top_n_epitopes": 10,
+          "binding_affinity_threshold_nm": 500,
+          "alphafold3_confidence_min": 0.85,
+          "peptide_lengths": [8, 9, 10, 11],
+          "hla_allele_coverage": 12000
+        }
+      },
+      "module2_crispr_engineering": {
+        "name": "CRISPR 3.0 T-Cell Engineering",
+        "duration_hours": 24,
+        "inputs": [
+          "Top neoepitopes from Module 1",
+          "Autologous T-cells",
+          "TCR design specifications"
+        ],
+        "process": [
+          "Design optimized TCRs for top epitopes",
+          "Generate guide RNAs for TCR insertion",
+          "Design knockouts for PD-1 and TIGIT",
+          "AI-designed CRISPR 3.0 editing with real-time feedback",
+          "Adaptive parameter adjustment during editing",
+          "Off-target detection and correction"
+        ],
+        "outputs": [
+          "Engineered T-cells with optimized TCRs",
+          "PD-1/TIGIT knockout confirmation",
+          "Editing efficiency reports",
+          "Cell viability metrics"
+        ],
+        "parameters": {
+          "tcr_designs_per_epitope": 1,
+          "target_genes": ["TRAC", "PD1", "TIGIT"],
+          "on_target_efficiency_min": 0.95,
+          "off_target_rate_max": 0.002,
+          "cell_viability_min": 0.995,
+          "adaptive_feedback_cycles": 3
+        }
+      },
+      "module3_spatial_validation": {
+        "name": "Spatial Validation in Patient-Derived Organoids",
+        "duration_hours": 36,
+        "inputs": [
+          "Engineered T-cells from Module 2",
+          "Patient-derived tumor organoids (PDOs)",
+          "Co-culture conditions"
+        ],
+        "process": [
+          "Co-culture engineered T-cells with PDOs",
+          "RAEFISH sequencing-free spatial transcriptomics",
+          "Visualize T-cell infiltration patterns",
+          "Detect engineered gRNA sequences spatially",
+          "Quantify cytotoxicity markers (GZMB, IFNG)",
+          "Map tumor microenvironment remodeling"
+        ],
+        "outputs": [
+          "Spatial maps of T-cell infiltration",
+          "Cytotoxicity scores",
+          "gRNA detection counts",
+          "Success rate metrics"
+        ],
+        "parameters": {
+          "t_cell_count": 100000,
+          "incubation_hours": 36,
+          "imaging_resolution_nm": 100,
+          "cytotoxicity_markers": ["GZMB", "IFNG", "PRF1"],
+          "success_threshold": 0.85,
+          "infiltration_depth_target_um": 200
+        }
+      },
+      "module4_ai_iteration": {
+        "name": "AI-Driven Iteration Loop",
+        "duration_hours": "ongoing",
+        "inputs": [
+          "Validation results from Module 3",
+          "Clinical outcome datasets",
+          "Historical workflow data"
+        ],
+        "process": [
+          "Analyze successful vs failed validations",
+          "Extract epitope prediction patterns",
+          "Refine TCR design heuristics",
+          "Update CRISPR parameter optimization",
+          "Train ML model on expanding datasets",
+          "Generate feedback for next patient"
+        ],
+        "outputs": [
+          "Updated epitope ranking weights",
+          "Refined CRISPR parameters",
+          "Improved TCR design rules",
+          "Confidence scores for improvements"
+        ],
+        "parameters": {
+          "ml_model_type": "ensemble",
+          "training_dataset_size_min": 100,
+          "confidence_threshold": 0.9,
+          "update_frequency": "per_workflow"
+        }
+      }
+    },
+    
+    "value_proposition": {
+      "clinical_impact": {
+        "turnaround_time_hours": 72,
+        "comparison_months": [6, 12],
+        "cost_per_patient_usd": 15000,
+        "comparison_cost_usd": 375000,
+        "success_rate_target": 0.85,
+        "conventional_success_rate": 0.50
+      },
+      "market_value": {
+        "tam_billion_usd": 45,
+        "market_name": "Immuno-oncology",
+        "defensibility_years": [5, 7],
+        "scalability": "Cloud-based AF3 + benchtop CRISPR 3.0 + RAEFISH in 200 sq ft lab"
+      }
+    },
+    
+    "competitive_moat": {
+      "multi_epitope_prediction": {
+        "2024_state": "Specialized tools (~60% accuracy)",
+        "2025_state": "AlphaFold 3 unified framework (>90% accuracy)"
+      },
+      "gene_editing_safety": {
+        "2024_state": "5-10% off-target rates",
+        "2025_state": "CRISPR 3.0 <0.2% off-target with feedback"
+      },
+      "validation_speed": {
+        "2024_state": "2-week sequencing workflows",
+        "2025_state": "36-hour imaging-only workflow"
+      },
+      "integration": {
+        "2024_state": "Manual, siloed steps",
+        "2025_state": "End-to-end automation with AI orchestration"
+      }
+    },
+    
+    "performance_requirements": {
+      "api_response_times": {
+        "queries_p95_ms": 500,
+        "simulations_p95_s": 2,
+        "cached_responses_p95_ms": 100
+      },
+      "concurrent_users": 1000,
+      "database_requirements": {
+        "indexed_queries_max_s": 1,
+        "full_text_search_max_s": 2,
+        "write_operations_max_ms": 500
+      },
+      "simulations_per_day": 10000,
+      "availability_sla": 0.999,
+      "data_retention_years": 7
+    },
+    
+    "security_compliance": {
+      "hipaa_safeguards": [
+        "Administrative: policies, training, access reviews",
+        "Physical: data center controls, device encryption",
+        "Technical: encryption at rest/transit, audit logs, access controls"
+      ],
+      "encryption": {
+        "at_rest": "AES-256",
+        "in_transit": "TLS 1.3",
+        "key_rotation_days": 90
+      },
+      "audit_logging": {
+        "scope": "All genomic data access and workflow operations",
+        "retention": "indefinite",
+        "immutable": true
+      },
+      "access_control": {
+        "type": "RBAC with MFA",
+        "session_timeout_minutes": 30,
+        "review_frequency_days": 90
+      }
+    },
+    
+    "integration_points": {
+      "existing_platform": {
+        "tumortrack_institutional": {
+          "description": "Multi-tenant SaaS platform for tumor dynamics",
+          "shared_components": [
+            "FastAPI backend",
+            "PostgreSQL database with oncology schema",
+            "Redis caching layer",
+            "S3 model artifacts storage",
+            "HIPAA-compliant architecture",
+            "Multi-tenant isolation"
+          ]
+        },
+        "nanostealth": {
+          "description": "Nanocarrier delivery optimization",
+          "synergies": [
+            "Shared PK/PD modeling infrastructure",
+            "Common FHIR integration",
+            "Unified NBA translation framework",
+            "Lab automation pipeline"
+          ]
+        }
+      },
+      "new_schemas": {
+        "tedrv": {
+          "tables": [
+            "genomic_profiles",
+            "neoepitope_predictions",
+            "tcr_designs",
+            "crispr_edits",
+            "spatial_validations",
+            "tedrv_workflows",
+            "iteration_feedback"
+          ],
+          "relationships": [
+            "genomic_profiles -> patients (core.patients)",
+            "tedrv_workflows -> institutions (core.institutions)",
+            "All tables include audit_log linkage"
+          ]
+        }
+      }
+    },
+    
+    "deployment_architecture": {
+      "lab_footprint": {
+        "total_sqft": 200,
+        "components": [
+          "CRISPR 3.0 benchtop workstation",
+          "RAEFISH imaging system",
+          "AlphaFold 3 API server (cloud or local GPU)",
+          "PDO culture incubators",
+          "Biosafety cabinet"
+        ]
+      },
+      "computational_resources": {
+        "alphafold3_inference": "Cloud GPU or local A100",
+        "protein_llm": "API service",
+        "spatial_imaging": "Local workstation with GPU",
+        "database": "PostgreSQL 15+ (Aurora-compatible)",
+        "caching": "Redis cluster"
+      }
+    },
+    
+    "regulatory_path": {
+      "fda_guidance": "2025 AI-driven drug design (predict-then-validate workflows)",
+      "clinical_trials": [
+        "Phase 1: Safety and feasibility (NCT-style)",
+        "Phase 2: Efficacy in selected solid tumors",
+        "Phase 3: Comparative vs standard-of-care"
+      ],
+      "ind_requirements": [
+        "Manufacturing controls for CRISPR editing",
+        "GMP compliance for T-cell production",
+        "Computational validation documentation",
+        "Patient safety monitoring plan"
+      ]
+    },
+    
+    "references": {
+      "alphafold3_paper": "Nature 2024 - Accurate structure prediction of biomolecular interactions",
+      "crispr3_trials": "Science Translated 2025 - CRISPR 3.0 blindness cure (12 patients)",
+      "raefish_cell_paper": "Cell 2025 - Sequencing-free whole-genome spatial transcriptomics",
+      "protein_llm_survey": "EMNLP 2025 - Protein Large Language Models comprehensive survey",
+      "tcr_modeling": "Science Advances 2024 - TCR-pMHC structural characterization"
+    }
+  }
+}
