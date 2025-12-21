@@ -13,6 +13,7 @@ Integrates with NetworkCellularMap v2.0 to provide:
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 import asyncio
+import threading
 
 
 class UserModel:
@@ -80,8 +81,10 @@ class MemorySystem:
     async def recall(self, query: str, context: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Recall relevant memories for query"""
         # Simple recall - in production would use vector similarity
+        # Configurable memory limit
+        MEMORY_RECALL_LIMIT = 10
         relevant = []
-        for memory in self.episodic_memory[-10:]:  # Last 10 events
+        for memory in self.episodic_memory[-MEMORY_RECALL_LIMIT:]:  # Last N events
             relevant.append(memory)
         return relevant
     
@@ -233,8 +236,11 @@ class CerebroCore:
         
         self.initialized = True
         
-        # Start autonomous agent
-        asyncio.create_task(self.agent.run_nightly_analysis())
+        # Start autonomous agent in background (with error handling)
+        try:
+            asyncio.create_task(self.agent.run_nightly_analysis())
+        except Exception as e:
+            print(f"Warning: Could not start autonomous agent: {e}")
     
     async def personalize(self) -> None:
         """Deep personalization to user"""
@@ -362,22 +368,25 @@ class CerebroCore:
         }
 
 
-# Global Cerebro instance
+# Global Cerebro instance with thread safety
 cerebro_instance: Optional[CerebroCore] = None
+_cerebro_lock = threading.Lock()
 
 
 def get_cerebro() -> CerebroCore:
-    """Get or create Cerebro instance"""
+    """Get or create Cerebro instance (thread-safe)"""
     global cerebro_instance
-    if cerebro_instance is None:
-        cerebro_instance = CerebroCore()
-    return cerebro_instance
+    with _cerebro_lock:
+        if cerebro_instance is None:
+            cerebro_instance = CerebroCore()
+        return cerebro_instance
 
 
 async def initialize_cerebro(user: Optional[Dict[str, Any]] = None) -> CerebroCore:
-    """Initialize Cerebro system"""
+    """Initialize Cerebro system (thread-safe)"""
     global cerebro_instance
-    cerebro_instance = CerebroCore(user)
-    await cerebro_instance.start()
-    await cerebro_instance.personalize()
-    return cerebro_instance
+    with _cerebro_lock:
+        cerebro_instance = CerebroCore(user)
+        await cerebro_instance.start()
+        await cerebro_instance.personalize()
+        return cerebro_instance

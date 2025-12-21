@@ -40,7 +40,7 @@ async def initialize(user: Optional[CerebroUserProfile] = None):
     Returns:
         Initialization status and cognitive profile
     """
-    user_dict = user.dict() if user else None
+    user_dict = user.dict() if user is not None else None
     cerebro = await initialize_cerebro(user_dict)
     
     return {
