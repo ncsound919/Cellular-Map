@@ -98,6 +98,16 @@ BioKleisli queries join data across sources based on universal genomic positions
 - HDR template with wildtype sequence
 - AAV9 multitropic delivery (crosses BBB + muscle + liver)
 
+### 6. TapSpeak Translation System
+**Plain English Biotech Translation**:
+- Converts complex biotech to memorable phrases
+- Basketball analogies (BBTech layer)
+- 7-layer structure: TapSpeak → Professional → Operational → Translational
+- Confidence metrics: ESAT (comprehension) + CEP (precision)
+- Examples: "Big dogs eat first" = Hub centrality, "Cut the fat" = Innovation exploration
+
+See [TapSpeak Documentation](docs/TAPSPEAK.md) for full details.
+
 ## API Endpoints
 
 ### POST /api/v1/networkologist/diagnose
@@ -114,6 +124,15 @@ Pan-cellular impact analysis for specific mutation
 
 ### POST /api/v1/repair_design/{hub_id}
 Design CRISPR repair strategy with bill of materials
+
+### GET /api/v1/tapspeak/concepts
+Get TapSpeak translations (core concepts, workflow, codex metrics)
+
+### POST /api/v1/tapspeak/search
+Search translations by tags, query, or confidence thresholds
+
+### POST /api/v1/tapspeak/translate
+Translate technical biotech term to plain English with basketball analogy
 
 ## Installation
 
