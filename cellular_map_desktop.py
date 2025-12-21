@@ -153,7 +153,6 @@ class CellularMapDesktop:
         Returns:
             True if backend is ready, False otherwise
         """
-        import time
         try:
             import requests
         except ImportError:
@@ -169,7 +168,9 @@ class CellularMapDesktop:
                 response = requests.get(url, timeout=2)
                 if response.status_code == 200:
                     return True
-            except (requests.RequestException, Exception):
+            except Exception:
+                # Connection refused, timeout, or other network errors are expected
+                # while backend is starting up
                 pass
             time.sleep(1)
         
@@ -609,15 +610,16 @@ class CellularMapDesktop:
         
         print(f"📊 HTML report generated: {html_path}")
         
-        # Copy to desktop if accessible
+        # Copy to desktop if accessible (optional feature, failures are non-critical)
         try:
             desktop_path = Path.home() / "Desktop"
             if desktop_path.exists() and desktop_path.is_dir():
                 desktop_file = desktop_path / f"CellularMap_{timestamp}.html"
                 shutil.copy2(html_path, desktop_file)
                 print(f"   📋 Copied to Desktop: {desktop_file}")
-        except Exception as e:
-            # Desktop copy is optional, don't fail if it doesn't work
+        except (PermissionError, OSError):
+            # Desktop copy is optional - skip silently if desktop is not accessible
+            # (e.g., running on server, restricted permissions, or no GUI desktop)
             pass
         
         return html_path

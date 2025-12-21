@@ -5,6 +5,7 @@ import sys
 import os
 import json
 import tempfile
+import time
 from pathlib import Path
 from unittest import mock
 
@@ -141,7 +142,6 @@ def test_interruptible_sleep():
     print("\nTesting interruptible sleep...")
     try:
         from cellular_map_desktop import CellularMapDesktop
-        import time
         
         with tempfile.TemporaryDirectory() as tmpdir:
             home_dir = Path(tmpdir) / "CellularMapDesktop"
