@@ -250,6 +250,34 @@ npm install
 npm run dev
 ```
 
+### Desktop Tool (One-Click Autonomous Discovery)
+
+For a standalone desktop experience with autonomous discovery and structured exports:
+
+```bash
+# Run the desktop tool (installs dependencies on first run)
+python cellular_map_desktop.py
+```
+
+**What it does (every 4 hours):**
+- ✅ Initializes Cerebro autonomous agent
+- ✅ Fetches nightly discovery reports
+- ✅ Analyzes high-impact genes (TP53, BRCA1, EGFR, KRAS, PIK3CA)
+- ✅ Designs CRISPR repairs for high-gravity targets
+- ✅ Generates TapSpeak plain English insights
+- ✅ Exports structured results (JSON, CSV, HTML)
+
+**Output files in `~/CellularMapDesktop/exports/`:**
+```
+├── breakthroughs_YYYYMMDD_HHMMSS.html     ← HTML summary report
+├── cerebro_report_YYYYMMDD_HHMMSS.json    ← New discoveries
+├── breakthrough_TP53_YYYYMMDD_HHMMSS.json ← CRISPR designs
+├── tapspeak_insights_YYYYMMDD_HHMMSS.csv  ← Plain English insights
+├── tapspeak_insights_YYYYMMDD_HHMMSS.json ← Full TapSpeak data
+```
+
+**Stop gracefully:** Press `Ctrl+C`
+
 ### Kubernetes Deployment
 
 ```bash
