@@ -12,8 +12,10 @@ redis==5.0.1
 networkx==3.3
 torch>=2.5.0
 torch-geometric>=2.5.0
-torch-scatter>=2.1.0
-torch-sparse>=0.6.18
+# torch-scatter and torch-sparse are optional (GNN features); install separately
+# on Kaggle if needed: pip install torch-scatter torch-sparse -f https://data.pyg.org/whl/torch-2.5.0+cpu.html
+# torch-scatter>=2.1.0
+# torch-sparse>=0.6.18
 
 # AI & Causal Inference
 causalnex==0.12.1
