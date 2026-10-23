@@ -1,0 +1,31 @@
+name: Cellular-Map Kaggle Tests
+on:
+  push:
+    paths:
+      - 'backend/**'
+      - 'tests/**'
+  workflow_dispatch:
+
+jobs:
+  kaggle-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Kaggle CLI
+        run: pip install kaggle
+      - name: Configure Kaggle
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        run: |
+          mkdir -p ~/.kaggle
+          echo "{\"username\":\"tap4500\",\"key\":\"$KAGGLE_API_TOKEN\"}" > ~/.kaggle/kaggle.json
+          chmod 600 ~/.kaggle/kaggle.json
+      - name: Install deps and run tests
+        run: |
+          cd backend
+          pip install -q biopython pydantic pydantic-settings fastapi networkx numpy pandas scikit-learn httpx python-dotenv aiofiles python-multipart requests
+          python -m pytest tests/ -q
