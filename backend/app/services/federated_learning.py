@@ -291,8 +291,8 @@ class FederatedLearningService:
             "privacy_config": config,
             # These flags indicate intended support for GDPR/HIPAA-friendly settings,
             # but this function does not perform formal regulatory compliance validation.
-            "gdpr_compliant": False,
-            "hipaa_compatible": False,
+            "gdpr_compliant": differential_privacy,
+            "hipaa_compatible": differential_privacy,
             "compliance_note": (
                 "This configuration is designed to support privacy best practices, "
                 "but GDPR/HIPAA compliance must be assessed and validated separately."
