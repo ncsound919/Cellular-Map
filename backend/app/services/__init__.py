@@ -4,7 +4,7 @@ from .ingestion import DataIngestionService, OMIMService, GenBankService, KEGGSe
 from .network import UniversalInteractomeService
 from .ai_scientist import CausalDiscoveryService, NetworkVulnerabilityService
 from .codex import CodexMetricsService
-from .repair import RepairDesignService
+from .repair import CrisprDesignService as RepairDesignService
 from .spatial_omics import SpatialOmicsService
 from .federated_learning import FederatedLearningService
 from .orchestration import (
